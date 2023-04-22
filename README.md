@@ -17,12 +17,8 @@
 
 ## 工具包发布
 
-# 构建
+# 构建 native image
 
 ```bash
-mvn clean install -DskipTests -P tencent,\!77hub -pl stm-plugin -am
-
-cd stm-app
-
-mvn clean native:compile -P tencent,\!77hub,native 
+sh build.sh
 ```
