@@ -6,7 +6,18 @@ package com.dudiao.stm.plugin;
  */
 public class StmException extends RuntimeException {
 
+    private Integer exitCode = 1;
+
     public StmException(String message) {
         super(message);
+    }
+
+    public StmException(String message, Integer exitCode) {
+        super(message);
+        this.exitCode = exitCode;
+    }
+
+    public Integer getExitCode() {
+        return exitCode;
     }
 }

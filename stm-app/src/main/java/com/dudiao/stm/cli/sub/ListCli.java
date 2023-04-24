@@ -1,6 +1,6 @@
 package com.dudiao.stm.cli.sub;
 
-import com.dudiao.stm.plugin.StmSubCli;
+import com.dudiao.stm.cli.StmSubCli;
 import org.noear.solon.annotation.Component;
 import picocli.CommandLine;
 
@@ -10,7 +10,7 @@ import picocli.CommandLine;
  */
 @Component
 @CommandLine.Command(name = "list", description = "列出所有的支持的工具")
-public class ListStmSubCli implements StmSubCli {
+public class ListCli implements StmSubCli {
 
     @CommandLine.Parameters(index = "0", description = "关键字")
     private String search;
@@ -19,7 +19,7 @@ public class ListStmSubCli implements StmSubCli {
     private boolean local;
 
     @Override
-    public void execute() {
-
+    public Integer execute() {
+        return 0;
     }
 }

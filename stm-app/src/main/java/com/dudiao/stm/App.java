@@ -4,17 +4,14 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.dudiao.stm.cli.StmCli;
-import com.dudiao.stm.plugin.StmSubCli;
+import com.dudiao.stm.cli.StmSubCli;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
 import org.noear.solon.core.util.LogUtil;
-import org.noear.solon.hotplug.PluginInfo;
-import org.noear.solon.hotplug.PluginManager;
 import org.noear.solon.logging.utils.LogUtilToSlf4j;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
-import java.util.Collection;
 import java.util.List;
 
 @SolonMain
@@ -32,12 +29,9 @@ public class App {
         CommandLine commandLine = new CommandLine(stmCli);
         List<StmSubCli> stmSubClis = Solon.context().getBeansOfType(StmSubCli.class);
         for (StmSubCli stmSubCli : stmSubClis) {
-            commandLine.addSubcommand(stmSubCli);
+            commandLine.addSubcommand(stmSubCli.getCommandLine());
         }
         commandLine.execute(args);
-
-        // install cli
-        Collection<PluginInfo> plugins = PluginManager.getPlugins();
     }
 
     private static void setLogLevel(String[] args) {

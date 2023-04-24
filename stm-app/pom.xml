@@ -16,35 +16,6 @@
             <artifactId>stm-plugin</artifactId>
         </dependency>
 
-        <!-- 内核 -->
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon</artifactId>
-        </dependency>
-
-        <!-- 热插拔 -->
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon.hotplug</artifactId>
-        </dependency>
-        <!-- 日志 -->
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon.logging.logback</artifactId>
-        </dependency>
-        <!-- cli -->
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
-            <version>${picocli.version}</version>
-        </dependency>
-        <!-- hutool -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-
         <!--solon native start-->
         <!--aot 注册native元信息-->
         <dependency>

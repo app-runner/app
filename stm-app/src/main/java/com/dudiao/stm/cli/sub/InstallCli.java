@@ -1,8 +1,8 @@
 package com.dudiao.stm.cli.sub;
 
-import com.dudiao.stm.persistence.StmPlugin;
-import com.dudiao.stm.persistence.StmPluginManager;
-import com.dudiao.stm.plugin.StmSubCli;
+import com.dudiao.stm.cli.StmSubCli;
+import com.dudiao.stm.persistence.PluginDO;
+import com.dudiao.stm.persistence.PluginPersistence;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import picocli.CommandLine;
@@ -15,10 +15,10 @@ import java.io.File;
  */
 @Component
 @CommandLine.Command(name = "install", description = "安装工具")
-public class InstallStmSubCli implements StmSubCli {
+public class InstallCli implements StmSubCli {
 
     @Inject
-    private StmPluginManager stmPluginManager;
+    private PluginPersistence pluginPersistence;
 
     @CommandLine.Parameters(index = "0", description = "工具名称")
     private String name;
@@ -27,10 +27,13 @@ public class InstallStmSubCli implements StmSubCli {
     private File path;
 
     @Override
-    public void execute() {
+    public Integer execute() {
         if (path != null) {
-            StmPlugin stmPlugin = StmPlugin.builder().name(name).jar(path.getAbsolutePath()).build();
-            stmPluginManager.add(stmPlugin);
+            PluginDO pluginDO = new PluginDO();
+            pluginDO.setName(name);
+            pluginDO.setJar(path.getAbsolutePath());
+            pluginPersistence.add(pluginDO);
         }
+        return 0;
     }
 }

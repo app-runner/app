@@ -1,15 +1,15 @@
 package com.dudiao.stm.persistence;
 
-import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * @author songyinyin
  * @since 2023/4/22 18:56
  */
 @Data
-@Builder
-public class StmPlugin {
+public class PluginDO implements Serializable {
 
     private String name;
 

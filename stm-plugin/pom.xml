@@ -15,19 +15,11 @@
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- 热插拔 -->
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon.hotplug</artifactId>
-            <scope>provided</scope>
         </dependency>
         <!-- 日志 -->
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon.logging.logback</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- cli -->
@@ -35,7 +27,6 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>${picocli.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- hutool -->
@@ -43,7 +34,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
             <version>${hutool.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
