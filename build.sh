@@ -7,7 +7,7 @@ mvn clean install -DskipTests -P tencent -pl stm-plugin -am
 
 cd stm-app || exit
 
-mvn clean native:compile -P tencent,native
+mvn clean native:compile -P tencent,native -X
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`

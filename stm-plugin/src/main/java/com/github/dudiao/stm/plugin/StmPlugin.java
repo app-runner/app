@@ -1,4 +1,4 @@
-package com.dudiao.stm.plugin;
+package com.github.dudiao.stm.plugin;
 
 import org.noear.solon.core.AopContext;
 import org.noear.solon.core.Plugin;

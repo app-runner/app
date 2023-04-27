@@ -1,4 +1,4 @@
-package com.dudiao.stm.cli;
+package com.github.dudiao.stm.cli;
 
 import org.noear.solon.Solon;
 import picocli.CommandLine;
@@ -9,7 +9,7 @@ import picocli.CommandLine;
  */
 public class StmVersionProvider implements CommandLine.IVersionProvider {
 
-    public static final String version = "1.0.0";
+    public static final String version = "0.0.2";
 
     @Override
     public String[] getVersion() throws Exception {

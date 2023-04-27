@@ -1,6 +1,6 @@
-package com.dudiao.stm.cli.sub;
+package com.github.dudiao.stm.cli.sub;
 
-import com.dudiao.stm.cli.StmSubCli;
+import com.github.dudiao.stm.cli.StmSubCli;
 import org.noear.solon.annotation.Component;
 import picocli.CommandLine;
 

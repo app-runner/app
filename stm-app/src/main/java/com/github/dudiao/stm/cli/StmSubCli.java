@@ -1,6 +1,6 @@
-package com.dudiao.stm.cli;
+package com.github.dudiao.stm.cli;
 
-import com.dudiao.stm.plugin.StmException;
+import com.github.dudiao.stm.plugin.StmException;
 import org.noear.solon.core.util.LogUtil;
 import picocli.CommandLine;
 

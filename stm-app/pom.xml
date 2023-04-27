@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dudiao.solon</groupId>
+        <groupId>com.github.dudiao.solon</groupId>
         <artifactId>stm</artifactId>
         <version>0.0.1</version>
     </parent>
@@ -12,7 +12,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dudiao.solon</groupId>
+            <groupId>com.github.dudiao.solon</groupId>
             <artifactId>stm-plugin</artifactId>
         </dependency>
 
@@ -21,16 +21,6 @@
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon.aot</artifactId>
-        </dependency>
-        <!-- apt 生成代理类 -->
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon.proxy.apt</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon.proxy</artifactId>
         </dependency>
         <!--solon native end-->
 

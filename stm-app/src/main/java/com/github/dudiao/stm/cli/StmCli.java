@@ -1,4 +1,4 @@
-package com.dudiao.stm.cli;
+package com.github.dudiao.stm.cli;
 
 import org.noear.solon.annotation.Component;
 import picocli.CommandLine;

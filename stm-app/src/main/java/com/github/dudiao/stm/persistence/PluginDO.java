@@ -1,4 +1,4 @@
-package com.dudiao.stm.persistence;
+package com.github.dudiao.stm.persistence;
 
 import lombok.Data;
 

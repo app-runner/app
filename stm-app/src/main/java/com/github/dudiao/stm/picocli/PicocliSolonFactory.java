@@ -1,4 +1,4 @@
-package com.dudiao.stm.picocli;
+package com.github.dudiao.stm.picocli;
 
 import org.noear.solon.Solon;
 import picocli.CommandLine;

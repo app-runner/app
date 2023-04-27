@@ -1,4 +1,4 @@
-package com.dudiao.stm.hotplugin;
+package com.github.dudiao.stm.hotplugin;
 
 import org.noear.solon.core.JarClassLoader;
 

@@ -4,16 +4,7 @@
 
 # 工具包
 ## 工具包开发
-每个工具包，是一个单独的项目，需要在项目的`pom.xml`中添加`stm-plugin`的依赖，如下：
-
-```xml
-
-<dependency>
-    <groupId>com.dudiao.solon</groupId>
-    <artifactId>stm-plugin</artifactId>
-    <version>0.0.1</version>
-</dependency>
-```
+每个工具包，是一个单独的项目，`stm`只是对其进行管理，是应用启动的入口。
 
 ## 工具包发布
 
@@ -21,4 +12,16 @@
 
 ```bash
 sh build.sh
+```
+
+## 使用
+
+示例项目地址：https://github.com/dudiao/stm-examples
+
+```shell
+stm --help
+
+stm install examples -p /Users/yourpath/stm-examples.jar
+
+stm run examples -n abc -l
 ```

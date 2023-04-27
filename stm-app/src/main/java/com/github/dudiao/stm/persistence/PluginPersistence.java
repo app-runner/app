@@ -1,9 +1,9 @@
-package com.dudiao.stm.persistence;
+package com.github.dudiao.stm.persistence;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.SystemPropsUtil;
-import com.dudiao.stm.plugin.StmException;
+import com.github.dudiao.stm.plugin.StmException;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;

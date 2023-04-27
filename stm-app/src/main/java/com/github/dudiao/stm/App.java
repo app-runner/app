@@ -1,10 +1,10 @@
-package com.dudiao.stm;
+package com.github.dudiao.stm;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import com.dudiao.stm.cli.StmCli;
-import com.dudiao.stm.cli.StmSubCli;
+import com.github.dudiao.stm.cli.StmCli;
+import com.github.dudiao.stm.cli.StmSubCli;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
 import org.noear.solon.core.util.LogUtil;

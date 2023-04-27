@@ -1,6 +1,6 @@
-package com.dudiao.stm.nativex;
+package com.github.dudiao.stm.nativex;
 
-import com.dudiao.stm.persistence.PluginDO;
+import com.github.dudiao.stm.persistence.PluginDO;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;

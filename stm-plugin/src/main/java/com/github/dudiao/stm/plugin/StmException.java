@@ -1,4 +1,4 @@
-package com.dudiao.stm.plugin;
+package com.github.dudiao.stm.plugin;
 
 /**
  * @author songyinyin

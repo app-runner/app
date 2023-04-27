@@ -1,8 +1,8 @@
-package com.dudiao.stm.cli.sub;
+package com.github.dudiao.stm.cli.sub;
 
-import com.dudiao.stm.cli.StmSubCli;
-import com.dudiao.stm.persistence.PluginDO;
-import com.dudiao.stm.persistence.PluginPersistence;
+import com.github.dudiao.stm.cli.StmSubCli;
+import com.github.dudiao.stm.persistence.PluginDO;
+import com.github.dudiao.stm.persistence.PluginPersistence;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import picocli.CommandLine;

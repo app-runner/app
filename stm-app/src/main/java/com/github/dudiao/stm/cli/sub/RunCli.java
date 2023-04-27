@@ -1,12 +1,12 @@
-package com.dudiao.stm.cli.sub;
+package com.github.dudiao.stm.cli.sub;
 
-import com.dudiao.stm.cli.StmSubCli;
-import com.dudiao.stm.hotplugin.PluginManager;
-import com.dudiao.stm.hotplugin.PluginPackage;
-import com.dudiao.stm.persistence.PluginDO;
-import com.dudiao.stm.persistence.PluginPersistence;
-import com.dudiao.stm.plugin.StmException;
-import com.dudiao.stm.plugin.StmPluginCli;
+import com.github.dudiao.stm.cli.StmSubCli;
+import com.github.dudiao.stm.hotplugin.PluginManager;
+import com.github.dudiao.stm.hotplugin.PluginPackage;
+import com.github.dudiao.stm.persistence.PluginDO;
+import com.github.dudiao.stm.persistence.PluginPersistence;
+import com.github.dudiao.stm.plugin.StmException;
+import com.github.dudiao.stm.plugin.StmPluginCli;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.AopContext;
