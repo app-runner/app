@@ -1,6 +1,6 @@
 package com.github.dudiao.stm.nativex;
 
-import com.github.dudiao.stm.persistence.PluginDO;
+import com.github.dudiao.stm.persistence.ToolDO;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
@@ -15,6 +15,6 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
 
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
-        nativeMetadata.registerSerialization(PluginDO.class);
+        nativeMetadata.registerSerialization(ToolDO.class);
     }
 }

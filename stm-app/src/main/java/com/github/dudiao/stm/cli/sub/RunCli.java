@@ -1,51 +1,54 @@
 package com.github.dudiao.stm.cli.sub;
 
 import com.github.dudiao.stm.cli.StmSubCli;
-import com.github.dudiao.stm.hotplugin.PluginManager;
-import com.github.dudiao.stm.hotplugin.PluginPackage;
-import com.github.dudiao.stm.persistence.PluginDO;
-import com.github.dudiao.stm.persistence.PluginPersistence;
+import com.github.dudiao.stm.persistence.ToolDO;
+import com.github.dudiao.stm.persistence.ToolsPersistence;
 import com.github.dudiao.stm.plugin.StmException;
-import com.github.dudiao.stm.plugin.StmPluginCli;
+import com.github.dudiao.stm.tools.AppHome;
+import com.github.dudiao.stm.tools.JavaProcessExecutor;
+import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.core.AopContext;
 import picocli.CommandLine;
-
-import java.io.File;
 
 /**
  * @author songyinyin
  * @since 2023/4/23 10:05
  */
+@Slf4j
 @Component
-@CommandLine.Command(name = "run", description = "运行工具")
+@CommandLine.Command(name = "run", description = "运行应用")
 public class RunCli implements StmSubCli {
 
     @Inject
-    private PluginPersistence pluginPersistence;
+    private ToolsPersistence toolsPersistence;
 
-    @CommandLine.Parameters(index = "0", description = "工具名称")
+    private final AppHome appHome = new AppHome();
+
+    @CommandLine.Parameters(index = "0", description = "应用名称")
     private String name;
 
-    @CommandLine.Parameters(index = "1..*", description = "工具名称")
-    private String[] pluginParameters;
+    @CommandLine.Parameters(index = "1..*", description = "运行参数")
+    private String[] appParameters;
 
     @Override
     public Integer execute() {
-        PluginDO pluginDO = pluginPersistence.get(name);
-        if (pluginDO == null) {
-            throw new StmException("工具不存在");
+        ToolDO toolDO = toolsPersistence.get(name);
+        if (toolDO == null) {
+            throw new StmException("应用不存在");
         }
 
-        PluginPackage pluginPackage = PluginManager.loadJar(new File(pluginDO.getJar())).start();
-        AopContext context = pluginPackage.getContext();
-        StmPluginCli stmPluginCli = context.getBean(StmPluginCli.class);
-
-        if (pluginParameters == null) {
-            pluginParameters = new String[0];
+        switch (toolDO.getAppType()) {
+            case java -> {
+                JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(toolDO, appParameters);
+                return javaProcessExecutor.run(appHome.getDir());
+            }
+            case shell -> {
+                log.info("shell exe");
+            }
+            default -> throw new StmException("暂不支持该类型[%s]的程序运行".formatted(toolDO.getAppType()));
         }
-        return new CommandLine(stmPluginCli).execute(pluginParameters);
+        return 0;
     }
 
     @Override

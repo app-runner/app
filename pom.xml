@@ -19,8 +19,8 @@
 
     <description>Solon Toolkit Manager</description>
     <modules>
-        <module>stm-plugin</module>
         <module>stm-app</module>
+        <module>stm-common</module>
     </modules>
 
     <properties>
@@ -28,22 +28,48 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <picocli.version>4.7.3</picocli.version>
-        <h2.version>2.1.214</h2.version>
+        <jline.version>3.23.0</jline.version>
 
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <java.ver>17</java.ver>
+        <java.version>17</java.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.github.dudiao.solon</groupId>
-                <artifactId>stm-plugin</artifactId>
+                <artifactId>stm-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal</artifactId>
+                <version>${jline.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal-jansi</artifactId>
+                <version>${jline.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- annotationProcessorPaths requires maven-compiler-plugin version 3.5 or higher -->
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <repositories>
         <repository>
 			<id>tencent</id>

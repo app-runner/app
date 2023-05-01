@@ -8,7 +8,7 @@ import picocli.CommandLine;
  * @since 2023/4/21 19:03
  */
 @Component
-@CommandLine.Command(name = "stm", mixinStandardHelpOptions = true, versionProvider = StmVersionProvider.class, description = "工具集合")
+@CommandLine.Command(name = "stm", mixinStandardHelpOptions = true, versionProvider = StmVersionProvider.class, description = "应用集合")
 public class StmCli implements Runnable {
 
     @CommandLine.Spec

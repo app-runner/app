@@ -4,9 +4,9 @@
     <parent>
         <groupId>com.github.dudiao.solon</groupId>
         <artifactId>stm</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
-    <artifactId>stm-plugin</artifactId>
+    <artifactId>stm-common</artifactId>
     <name>stm-plugin</name>
 
 

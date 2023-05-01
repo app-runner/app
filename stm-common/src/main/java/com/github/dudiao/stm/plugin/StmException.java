@@ -12,6 +12,10 @@ public class StmException extends RuntimeException {
         super(message);
     }
 
+    public StmException(String message, Exception e) {
+        super(message, e);
+    }
+
     public StmException(String message, Integer exitCode) {
         super(message);
         this.exitCode = exitCode;
