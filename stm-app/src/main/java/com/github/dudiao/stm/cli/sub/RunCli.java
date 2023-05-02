@@ -51,11 +51,4 @@ public class RunCli implements StmSubCli {
         return 0;
     }
 
-    @Override
-    public CommandLine getCommandLine() {
-        CommandLine commandLine = new CommandLine(this);
-        // 未匹配的参数作为位置参数
-        commandLine.setUnmatchedOptionsArePositionalParams(true);
-        return commandLine;
-    }
 }

@@ -7,6 +7,7 @@ import com.github.dudiao.stm.cli.StmCli;
 import com.github.dudiao.stm.cli.StmSubCli;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
+import org.noear.solon.core.NativeDetector;
 import org.noear.solon.core.util.LogUtil;
 import org.noear.solon.logging.utils.LogUtilToSlf4j;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,10 @@ public class App {
         for (StmSubCli stmSubCli : stmSubClis) {
             commandLine.addSubcommand(stmSubCli.getCommandLine());
         }
-        commandLine.execute(args);
+        int execute = commandLine.execute(args);
+        if (!NativeDetector.isAotRuntime()) {
+            Solon.stopBlock(true, -1, execute);
+        }
     }
 
     private static void setLogLevel(String[] args) {

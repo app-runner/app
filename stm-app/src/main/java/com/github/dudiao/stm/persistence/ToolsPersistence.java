@@ -8,8 +8,8 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;
 import org.noear.solon.annotation.Component;
-import org.noear.solon.annotation.Init;
 import org.noear.solon.annotation.Inject;
+import org.noear.solon.core.bean.LifecycleBean;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * @since 2023/4/22 18:27
  */
 @Component
-public class ToolsPersistence {
+public class ToolsPersistence implements LifecycleBean {
 
     private final Options jsonOptions = Options.def().add(Feature.PrettyFormat).add(Feature.OrderedField);
 
@@ -29,11 +29,10 @@ public class ToolsPersistence {
     @Inject(value = "${stm.tools.metadata-path}", required = false)
     private File toolsJson;
 
-    @Init
-    public void init() {
+    @Override
+    public void start() throws Throwable {
         if (toolsJson == null) {
             toolsJson = new File(SystemPropsUtil.get("user.home"), "/.stm/metadata/tools.json");
-            System.out.println(toolsJson.getAbsolutePath());
         }
     }
 

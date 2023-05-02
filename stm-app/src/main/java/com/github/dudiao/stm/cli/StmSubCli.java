@@ -24,7 +24,12 @@ public interface StmSubCli extends Callable<Integer> {
     Integer execute();
 
     default CommandLine getCommandLine() {
-        return new CommandLine(this);
+        CommandLine commandLine = new CommandLine(this);
+        // 未匹配的参数作为位置参数
+        commandLine.setUnmatchedOptionsArePositionalParams(true);
+        commandLine.setUnmatchedArgumentsAllowed(true);
+        commandLine.setUnmatchedOptionsAllowedAsOptionParameters(true);
+        return commandLine;
     }
 
 }
