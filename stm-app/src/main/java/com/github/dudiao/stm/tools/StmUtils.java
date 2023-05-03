@@ -10,6 +10,8 @@ import org.noear.solon.Solon;
  */
 public class StmUtils {
 
+    public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
+
     public static String getAppPath(ToolDO toolDO) {
         String appHome = Solon.cfg().get("stm.tools.app");
         if (appHome == null) {
@@ -21,5 +23,9 @@ public class StmUtils {
     public static boolean isDebugMode() {
         String stmDebug = Solon.cfg().get("stm.debug");
         return Solon.cfg().isDebugMode() || "1".equals(stmDebug);
+    }
+
+    public static boolean isWindows() {
+        return IS_WINDOWS;
     }
 }
