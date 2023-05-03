@@ -3,6 +3,7 @@ import org.junit.Test;
 import org.noear.solon.aot.Settings;
 import org.noear.solon.aot.SolonAotProcessor;
 
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -14,6 +15,11 @@ import java.util.Arrays;
 public class TestApp {
 
     @Test
+    public void testCharset() {
+        System.out.println("1. default charset: " + System.getProperty("file.encoding"));
+        System.out.println("2. default charset: " + Charset.defaultCharset());
+    }
+
     public void test() throws ClassNotFoundException {
         String[] args = new String[]{
             "com.github.dudiao.stm.App", "/Users/songyinyin/study/stm/stm-app/target/classes",
