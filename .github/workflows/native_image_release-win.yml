@@ -1,5 +1,11 @@
 name: native image release win
 
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'test-v*'
+
 jobs:
   build:
     strategy:
