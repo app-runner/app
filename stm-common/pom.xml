@@ -7,7 +7,7 @@
         <version>0.0.3</version>
     </parent>
     <artifactId>stm-common</artifactId>
-    <name>stm-plugin</name>
+    <name>stm-common</name>
 
 
     <dependencies>

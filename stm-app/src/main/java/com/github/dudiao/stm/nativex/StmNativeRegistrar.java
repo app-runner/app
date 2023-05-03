@@ -2,15 +2,19 @@ package com.github.dudiao.stm.nativex;
 
 import com.github.dudiao.stm.persistence.ToolDO;
 import com.github.dudiao.stm.tools.StmUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
 import org.noear.solon.core.AopContext;
 
+import java.nio.charset.Charset;
+
 /**
  * @author songyinyin
  * @since 2023/4/24 10:44
  */
+@Slf4j
 @Component
 public class StmNativeRegistrar implements RuntimeNativeRegistrar {
 
@@ -19,8 +23,10 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
         nativeMetadata.registerSerialization(ToolDO.class);
 
         if (StmUtils.isWindows()) {
-            nativeMetadata.registerArg("-H:DefaultCharset=GBK", "-H:DefaultLocale=zh-Hans-CN");
+            log.info("当前系统为 Windows，默认编码为 {}", Charset.defaultCharset());
+            nativeMetadata.registerArg("-H:+AddAllCharsets", "-H:DefaultLocale=zh-Hans-CN");
         } else {
+            log.info("当前系统为 Linux or Mac，默认编码为 {}", Charset.defaultCharset());
             nativeMetadata.registerArg("-H:DefaultCharset=UTF-8", "-H:DefaultLocale=zh-Hans-CN");
         }
     }
