@@ -37,7 +37,10 @@ public class JavaExecutable {
         if (StrUtil.isBlank(javaHome)) {
             javaHome = System.getProperty("java.home");
         }
-
+        if (StrUtil.isBlank(javaHome)) {
+            javaHome = System.getenv("JAVA_HOME");
+        }
+        Assert.state(StrUtil.isNotBlank(javaHome), "Unable to find java executable due to missing 'java.home'");
         this.file = findInJavaHome(javaHome);
     }
 

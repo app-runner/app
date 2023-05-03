@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.noear</groupId>
         <artifactId>solon-parent</artifactId>
-        <version>2.2.14-SNAPSHOT</version>
+        <version>2.2.14</version>
         <relativePath />
     </parent>
 
     <groupId>com.github.dudiao.solon</groupId>
     <artifactId>stm</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     
     <packaging>pom</packaging>
 

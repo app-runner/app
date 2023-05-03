@@ -17,4 +17,9 @@ public class StmUtils {
         }
         return "%s/%s/%s".formatted(appHome, toolDO.getName(), toolDO.getVersion());
     }
+
+    public static boolean isDebugMode() {
+        String stmDebug = Solon.cfg().get("stm.debug");
+        return Solon.cfg().isDebugMode() || "1".equals(stmDebug);
+    }
 }
