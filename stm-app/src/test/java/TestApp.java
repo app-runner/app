@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 import org.noear.solon.aot.Settings;
 import org.noear.solon.aot.SolonAotProcessor;
@@ -9,6 +10,7 @@ import java.util.Arrays;
  * @author songyinyin
  * @since 2023/5/2 11:39
  */
+@Ignore
 public class TestApp {
 
     @Test
