@@ -2,7 +2,6 @@
 
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
-cd ..
 mvn clean install -DskipTests -pl stm-common -am --no-transfer-progress package
 
 cd stm-app || exit
