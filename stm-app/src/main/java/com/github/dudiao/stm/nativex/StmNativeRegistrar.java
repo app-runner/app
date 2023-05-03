@@ -16,5 +16,6 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
         nativeMetadata.registerSerialization(ToolDO.class);
+        nativeMetadata.registerArg("-H:+AddAllCharsets'");
     }
 }
