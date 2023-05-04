@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.github.dudiao.solon</groupId>
+        <groupId>com.github.dudiao</groupId>
         <artifactId>stm</artifactId>
         <version>0.0.3</version>
     </parent>
@@ -12,7 +12,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.dudiao.solon</groupId>
+            <groupId>com.github.dudiao</groupId>
             <artifactId>stm-common</artifactId>
         </dependency>
 

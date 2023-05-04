@@ -11,7 +11,7 @@
         <relativePath />
     </parent>
 
-    <groupId>com.github.dudiao.solon</groupId>
+    <groupId>com.github.dudiao</groupId>
     <artifactId>stm</artifactId>
     <version>0.0.3</version>
     
@@ -37,7 +37,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.dudiao.solon</groupId>
+                <groupId>com.github.dudiao</groupId>
                 <artifactId>stm-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
