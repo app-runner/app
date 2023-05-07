@@ -1,5 +1,6 @@
 package com.github.dudiao.stm.cli;
 
+import com.github.dudiao.stm.tools.StmUtils;
 import org.noear.solon.Solon;
 import picocli.CommandLine;
 
@@ -15,6 +16,9 @@ public class StmVersionProvider implements CommandLine.IVersionProvider {
     public String[] getVersion() throws Exception {
         String solonVersion = String.format(":: Solon  :: v(%s)", Solon.version());
         String stmVersion = String.format(":: STM :: v(%s)", version);
-        return new String[]{solonVersion, stmVersion};
+        String osName = StmUtils.getOsName();
+        String osArch = StmUtils.getOsArch();
+        String sysInfo = "STM run in: %s (%s)".formatted(osName, osArch);
+        return new String[]{solonVersion, stmVersion, sysInfo};
     }
 }

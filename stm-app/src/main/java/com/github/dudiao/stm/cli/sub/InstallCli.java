@@ -43,6 +43,10 @@ public class InstallCli implements StmSubCli {
             ToolDO toolDO = new ToolDO();
             toolDO.setName(name);
             toolDO.setAppType(getAppType(path));
+            if (ApplicationType.java.equals(toolDO.getAppType())) {
+                toolDO.setJava(new ToolDO.JavaDO());
+                toolDO.setRequiredAppTypeVersionNum(17L);
+            }
             toolDO.setVersion(version);
             String installedAppPath = StmUtils.getAppPath(toolDO) + "/" + path.getName();
             File copy = FileUtil.copy(path, new File(installedAppPath), true);

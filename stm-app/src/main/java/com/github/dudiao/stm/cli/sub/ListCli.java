@@ -3,13 +3,14 @@ package com.github.dudiao.stm.cli.sub;
 import com.github.dudiao.stm.cli.StmSubCli;
 import com.github.dudiao.stm.persistence.ToolDO;
 import com.github.dudiao.stm.persistence.ToolsPersistence;
+import com.github.dudiao.stm.tools.ConsoleTable;
+import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
 import picocli.CommandLine;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author songyinyin
@@ -28,11 +29,32 @@ public class ListCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        if (local) {
-            List<ToolDO> list = toolsPersistence.list();
-            List<String> collect = list.stream().map(ToolDO::getName).collect(Collectors.toList());
-            log.info("list: {}", collect);
+
+        ConsoleTable consoleTable = ConsoleTable.create();
+        consoleTable.addHeader("name", "version", "appType", "requiredVersion");
+        List<ToolDO> localList = toolsPersistence.list();
+
+
+        List<String> existAppIds = localList.stream().map(ToolDO::getId).toList();
+        for (ToolDO toolDO : localList) {
+            consoleTable.addBody(toolDO.getName() + "(local)", toolDO.getVersion(), toolDO.getAppType().getType(), fieldToString(toolDO.getRequiredAppTypeVersionNum()));
         }
+        if (!local) {
+            List<ToolDO> toolDOS = StmUtils.apiList(null);
+            for (ToolDO toolDO : toolDOS) {
+                String name = existAppIds.contains(toolDO.getId()) ? toolDO.getName() + "(local)" : toolDO.getName();
+                consoleTable.addBody(name, toolDO.getVersion(), toolDO.getAppType().getType(), fieldToString(toolDO.getRequiredAppTypeVersionNum()));
+            }
+
+        }
+        log.info("\n{}", consoleTable);
         return 0;
+    }
+
+    private String fieldToString(Object object) {
+        if (object == null) {
+            return "";
+        }
+        return object.toString();
     }
 }

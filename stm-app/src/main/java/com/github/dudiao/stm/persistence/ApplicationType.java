@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 public enum ApplicationType {
 
-    java("java", "jar"),
+    java("Java", "jar"),
     shell("shell", "sh"),
     python("python", "py");
 

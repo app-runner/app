@@ -2,11 +2,11 @@
 
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
-mvn clean install -DskipTests -pl stm-common -am --no-transfer-progress package
+mvn clean install -DskipTests -pl stm-common -am --no-transfer-progress
 
 cd stm-app || exit
 
-mvn clean native:compile -P native --no-transfer-progress package
+mvn clean native:compile -P native --no-transfer-progress
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`

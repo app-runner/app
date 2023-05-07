@@ -11,6 +11,11 @@ import java.io.Serializable;
 @Data
 public class ToolDO implements Serializable {
 
+    /**
+     * 应用id
+     */
+    private String id;
+
     private String name;
 
     private String version;
@@ -22,6 +27,11 @@ public class ToolDO implements Serializable {
     private String toolAppPath;
 
     private ApplicationType appType;
+
+    /**
+     * 应用运行时，所需的环境版本
+     */
+    private Long requiredAppTypeVersionNum;
 
     private JavaDO java;
 
