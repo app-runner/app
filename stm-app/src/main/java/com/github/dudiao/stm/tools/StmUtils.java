@@ -62,6 +62,9 @@ public class StmUtils {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
         String url = apiUrl + "/list";
+        if (isDebugMode()) {
+            log.info("{} request: {}", url, paramMap);
+        }
         String response = HttpUtil.get(url, paramMap, timeout());
         if (isDebugMode()) {
             log.info("{} response: {}", url, response);

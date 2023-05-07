@@ -21,6 +21,8 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
         nativeMetadata.registerSerialization(ToolDO.class);
+        nativeMetadata.registerArg("--enable-http");
+        nativeMetadata.registerArg("--enable-https");
 
         if (StmUtils.isWindows()) {
             log.info("当前系统为 Windows，默认编码为 {}", Charset.defaultCharset());
