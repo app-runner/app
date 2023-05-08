@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @since 2023/4/22 18:56
  */
 @Data
-public class ToolDO implements Serializable {
+public class StmAppDO implements Serializable {
 
     /**
      * 应用id

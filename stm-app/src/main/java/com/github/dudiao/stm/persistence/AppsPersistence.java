@@ -21,7 +21,7 @@ import java.util.Optional;
  * @since 2023/4/22 18:27
  */
 @Component
-public class ToolsPersistence implements LifecycleBean {
+public class AppsPersistence implements LifecycleBean {
 
     private final Options jsonOptions = Options.def().add(Feature.PrettyFormat).add(Feature.OrderedField);
 
@@ -36,9 +36,9 @@ public class ToolsPersistence implements LifecycleBean {
         }
     }
 
-    public int add(ToolDO plugin) {
-        List<ToolDO> plugins = list();
-        Optional<ToolDO> first = plugins.stream().filter(e -> StrUtil.equals(e.getName(), plugin.getName())).findFirst();
+    public int add(StmAppDO plugin) {
+        List<StmAppDO> plugins = list();
+        Optional<StmAppDO> first = plugins.stream().filter(e -> StrUtil.equals(e.getName(), plugin.getName())).findFirst();
         if (first.isPresent()) {
             throw new StmException(String.format("插件 [%s] 已存在", plugin.getName()));
         }
@@ -48,22 +48,22 @@ public class ToolsPersistence implements LifecycleBean {
     }
 
     public int remove(String name) {
-        List<ToolDO> plugins = list();
+        List<StmAppDO> plugins = list();
         plugins.removeIf(plugin -> plugin.getName().equals(name));
         FileUtil.writeString(ONode.stringify(plugins, jsonOptions), toolsJson, StandardCharsets.UTF_8);
         return 1;
     }
 
-    public ToolDO get(String name) {
-        List<ToolDO> plugins = list();
+    public StmAppDO get(String name) {
+        List<StmAppDO> plugins = list();
         return plugins.stream().filter(plugin -> plugin.getName().equals(name)).findFirst().orElse(null);
     }
 
-    public List<ToolDO> list() {
+    public List<StmAppDO> list() {
         FileUtil.touch(toolsJson);
         String pluginStr = FileUtil.readString(toolsJson, StandardCharsets.UTF_8);
         ONode pluginNode = ONode.loadStr(pluginStr, jsonOptions);
-        return pluginNode.toObjectList(ToolDO.class);
+        return pluginNode.toObjectList(StmAppDO.class);
     }
 
 }

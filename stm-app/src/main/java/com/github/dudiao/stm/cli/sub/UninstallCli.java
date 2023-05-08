@@ -2,8 +2,8 @@ package com.github.dudiao.stm.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
 import com.github.dudiao.stm.cli.StmSubCli;
-import com.github.dudiao.stm.persistence.ToolDO;
-import com.github.dudiao.stm.persistence.ToolsPersistence;
+import com.github.dudiao.stm.persistence.StmAppDO;
+import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +24,16 @@ public class UninstallCli implements StmSubCli {
     private String name;
 
     @Inject
-    private ToolsPersistence toolsPersistence;
+    private AppsPersistence appsPersistence;
 
     @Override
     public Integer execute() {
-        ToolDO toolDO = toolsPersistence.get(name);
-        if (toolDO == null) {
+        StmAppDO stmAppDO = appsPersistence.get(name);
+        if (stmAppDO == null) {
             throw new StmException("应用不存在");
         }
-        String appPath = StmUtils.getAppPath(toolDO);
-        toolsPersistence.remove(name);
+        String appPath = StmUtils.getAppPath(stmAppDO);
+        appsPersistence.remove(name);
         FileUtil.del(appPath);
         log.info("删除文件:{}", appPath);
         log.info("应用[{}]卸载成功", name);

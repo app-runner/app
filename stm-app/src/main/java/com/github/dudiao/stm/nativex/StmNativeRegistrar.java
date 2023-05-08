@@ -1,6 +1,6 @@
 package com.github.dudiao.stm.nativex;
 
-import com.github.dudiao.stm.persistence.ToolDO;
+import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -20,7 +20,7 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
 
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
-        nativeMetadata.registerSerialization(ToolDO.class);
+        nativeMetadata.registerSerialization(StmAppDO.class);
         nativeMetadata.registerArg("--enable-http");
         nativeMetadata.registerArg("--enable-https");
 

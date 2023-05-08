@@ -4,8 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.dudiao.stm.cli.StmSubCli;
 import com.github.dudiao.stm.persistence.ApplicationType;
-import com.github.dudiao.stm.persistence.ToolDO;
-import com.github.dudiao.stm.persistence.ToolsPersistence;
+import com.github.dudiao.stm.persistence.StmAppDO;
+import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,28 +31,34 @@ public class InstallCli implements StmSubCli {
     @CommandLine.Option(names = {"-p", "--path"}, description = "本地应用文件路径")
     private File path;
 
+    @CommandLine.Option(names = {"-rv", "--requiredVersion"}, description = "应用运行的最低版本，比如Java应用需要指定Java版本，17")
+    private Long requiredVersion;
+
     @CommandLine.Option(names = {"-v", "--version"}, defaultValue = "local_version", description = "版本号")
     private String version;
 
     @Inject
-    private ToolsPersistence toolsPersistence;
+    private AppsPersistence appsPersistence;
 
     @Override
     public Integer execute() {
         if (path != null) {
-            ToolDO toolDO = new ToolDO();
-            toolDO.setName(name);
-            toolDO.setAppType(getAppType(path));
-            if (ApplicationType.java.equals(toolDO.getAppType())) {
-                toolDO.setJava(new ToolDO.JavaDO());
-                toolDO.setRequiredAppTypeVersionNum(17L);
+            if (requiredVersion == null) {
+                throw new StmException("请指定应用运行的最低版本，比如Java应用需要指定Java版本，17");
             }
-            toolDO.setVersion(version);
-            String installedAppPath = StmUtils.getAppPath(toolDO) + "/" + path.getName();
+            StmAppDO stmAppDO = new StmAppDO();
+            stmAppDO.setName(name);
+            stmAppDO.setAppType(getAppType(path));
+            if (ApplicationType.java.equals(stmAppDO.getAppType())) {
+                stmAppDO.setJava(new StmAppDO.JavaDO());
+                stmAppDO.setRequiredAppTypeVersionNum(requiredVersion);
+            }
+            stmAppDO.setVersion(version);
+            String installedAppPath = StmUtils.getAppPath(stmAppDO) + "/" + path.getName();
             File copy = FileUtil.copy(path, new File(installedAppPath), true);
             log.info("将应用[{}]复制到：{}", name, copy.getAbsolutePath());
-            toolDO.setToolAppPath(copy.getAbsolutePath());
-            toolsPersistence.add(toolDO);
+            stmAppDO.setToolAppPath(copy.getAbsolutePath());
+            appsPersistence.add(stmAppDO);
             log.info("应用安装[{}]成功", name);
         }
         return 0;

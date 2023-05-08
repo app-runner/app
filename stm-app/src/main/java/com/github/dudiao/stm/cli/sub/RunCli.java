@@ -1,8 +1,8 @@
 package com.github.dudiao.stm.cli.sub;
 
 import com.github.dudiao.stm.cli.StmSubCli;
-import com.github.dudiao.stm.persistence.ToolDO;
-import com.github.dudiao.stm.persistence.ToolsPersistence;
+import com.github.dudiao.stm.persistence.StmAppDO;
+import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.AppHome;
 import com.github.dudiao.stm.tools.JavaProcessExecutor;
@@ -21,7 +21,7 @@ import picocli.CommandLine;
 public class RunCli implements StmSubCli {
 
     @Inject
-    private ToolsPersistence toolsPersistence;
+    private AppsPersistence appsPersistence;
 
     private final AppHome appHome = new AppHome();
 
@@ -33,20 +33,20 @@ public class RunCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        ToolDO toolDO = toolsPersistence.get(name);
-        if (toolDO == null) {
+        StmAppDO stmAppDO = appsPersistence.get(name);
+        if (stmAppDO == null) {
             throw new StmException("应用不存在");
         }
 
-        switch (toolDO.getAppType()) {
+        switch (stmAppDO.getAppType()) {
             case java -> {
-                JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(toolDO, appParameters);
+                JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(stmAppDO, appParameters);
                 return javaProcessExecutor.run(appHome.getDir());
             }
             case shell -> {
                 log.info("shell exe");
             }
-            default -> throw new StmException("暂不支持该类型[%s]的程序运行".formatted(toolDO.getAppType()));
+            default -> throw new StmException("暂不支持该类型[%s]的程序运行".formatted(stmAppDO.getAppType()));
         }
         return 0;
     }

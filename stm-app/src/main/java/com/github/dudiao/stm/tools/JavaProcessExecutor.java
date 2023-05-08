@@ -18,7 +18,7 @@ package com.github.dudiao.stm.tools;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.dudiao.stm.persistence.ToolDO;
+import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.plugin.StmException;
 import org.noear.solon.Solon;
 import org.noear.solon.core.util.LogUtil;
@@ -45,7 +45,7 @@ public class JavaProcessExecutor {
 
     private Consumer<RunProcess> runProcessCustomizer;
 
-    private ToolDO javaApp;
+    private StmAppDO javaApp;
 
     private String[] appParameters;
 
@@ -59,8 +59,8 @@ public class JavaProcessExecutor {
         this.runProcessCustomizer = runProcessCustomizer;
     }
 
-    public JavaProcessExecutor(ToolDO toolDO, String[] appParameters) {
-        this.javaApp = toolDO;
+    public JavaProcessExecutor(StmAppDO stmAppDO, String[] appParameters) {
+        this.javaApp = stmAppDO;
         this.appParameters = appParameters;
     }
 

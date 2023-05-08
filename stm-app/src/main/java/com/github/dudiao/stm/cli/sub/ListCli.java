@@ -1,8 +1,8 @@
 package com.github.dudiao.stm.cli.sub;
 
 import com.github.dudiao.stm.cli.StmSubCli;
-import com.github.dudiao.stm.persistence.ToolDO;
-import com.github.dudiao.stm.persistence.ToolsPersistence;
+import com.github.dudiao.stm.persistence.StmAppDO;
+import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.tools.ConsoleTable;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -25,25 +25,25 @@ public class ListCli implements StmSubCli {
     private boolean local;
 
     @Inject
-    private ToolsPersistence toolsPersistence;
+    private AppsPersistence appsPersistence;
 
     @Override
     public Integer execute() {
 
         ConsoleTable consoleTable = ConsoleTable.create();
         consoleTable.addHeader("name", "version", "appType", "requiredVersion");
-        List<ToolDO> localList = toolsPersistence.list();
+        List<StmAppDO> localList = appsPersistence.list();
 
 
-        List<String> existAppIds = localList.stream().map(ToolDO::getId).toList();
-        for (ToolDO toolDO : localList) {
-            consoleTable.addBody(toolDO.getName() + "(local)", toolDO.getVersion(), toolDO.getAppType().getType(), fieldToString(toolDO.getRequiredAppTypeVersionNum()));
+        List<String> existAppIds = localList.stream().map(StmAppDO::getId).toList();
+        for (StmAppDO stmAppDO : localList) {
+            consoleTable.addBody(stmAppDO.getName() + "(local)", stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
         }
         if (!local) {
-            List<ToolDO> toolDOS = StmUtils.apiList(null);
-            for (ToolDO toolDO : toolDOS) {
-                String name = existAppIds.contains(toolDO.getId()) ? toolDO.getName() + "(local)" : toolDO.getName();
-                consoleTable.addBody(name, toolDO.getVersion(), toolDO.getAppType().getType(), fieldToString(toolDO.getRequiredAppTypeVersionNum()));
+            List<StmAppDO> stmAppDOS = StmUtils.apiList(null);
+            for (StmAppDO stmAppDO : stmAppDOS) {
+                String name = existAppIds.contains(stmAppDO.getId()) ? stmAppDO.getName() + "(local)" : stmAppDO.getName();
+                consoleTable.addBody(name, stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
             }
 
         }

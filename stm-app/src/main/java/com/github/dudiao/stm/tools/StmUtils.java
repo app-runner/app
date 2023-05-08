@@ -1,9 +1,8 @@
 package com.github.dudiao.stm.tools;
 
-import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.util.SystemPropsUtil;
 import cn.hutool.http.HttpUtil;
-import com.github.dudiao.stm.persistence.ToolDO;
+import com.github.dudiao.stm.persistence.StmAppDO;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.snack.ONode;
 import org.noear.solon.Solon;
@@ -21,12 +20,12 @@ public class StmUtils {
 
     public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
 
-    public static String getAppPath(ToolDO toolDO) {
+    public static String getAppPath(StmAppDO stmAppDO) {
         String appHome = Solon.cfg().get("stm.tools.app");
         if (appHome == null) {
             appHome = SystemPropsUtil.get("user.home") + "/.stm/app";
         }
-        return "%s/%s/%s".formatted(appHome, toolDO.getName(), toolDO.getVersion());
+        return "%s/%s/%s".formatted(appHome, stmAppDO.getName(), stmAppDO.getVersion());
     }
 
     public static boolean isDebugMode() {
@@ -57,10 +56,10 @@ public class StmUtils {
         return Solon.cfg().get("stm.api.url");
     }
 
-    public static List<ToolDO> apiList(String name) {
+    public static List<StmAppDO> apiList(String appName) {
         String apiUrl = apiUrl();
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
+        paramMap.put("name", appName);
         String url = apiUrl + "/list";
         if (isDebugMode()) {
             log.info("{} request: {}", url, paramMap);
@@ -69,6 +68,10 @@ public class StmUtils {
         if (isDebugMode()) {
             log.info("{} response: {}", url, response);
         }
-        return ONode.loadStr(response).get("data").toObjectList(ToolDO.class);
+        return ONode.loadStr(response).get("data").toObjectList(StmAppDO.class);
+    }
+
+    public static List<StmAppDO> getLatestVersion(String appName) {
+
     }
 }
