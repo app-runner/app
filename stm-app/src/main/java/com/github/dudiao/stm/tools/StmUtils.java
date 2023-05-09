@@ -1,15 +1,22 @@
 package com.github.dudiao.stm.tools;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.compress.Gzip;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.SystemPropsUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpUtil;
+import com.github.dudiao.stm.persistence.ApplicationType;
 import com.github.dudiao.stm.persistence.StmAppDO;
-import com.github.dudiao.stm.persistence.StmAppVersionDO;
 import com.github.dudiao.stm.plugin.StmException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.snack.ONode;
 import org.noear.solon.Solon;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +30,18 @@ public class StmUtils {
 
     public static final String API_LIST = "/list";
     public static final String API_LATEST_VERSION = "/latestVersion";
+    public static final String API_GET_APP_RUNTIME_SDK_URLS = "/getAppRuntimeSdkUrls";
 
     public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
 
+    public static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+
     public static boolean isWindows() {
         return IS_WINDOWS;
+    }
+
+    public static boolean isMac() {
+        return IS_MAC;
     }
 
     public static String getOsName() {
@@ -49,18 +63,88 @@ public class StmUtils {
         return Solon.cfg().get("stm.api.url");
     }
 
-    public static String getAppPath(StmAppDO stmAppDO) {
-        String appHome = Solon.cfg().get("stm.tools.app");
+    /**
+     * stm 应用数据目录，默认为：~/.stm
+     */
+    public static String getAppHome() {
+        String appHome = Solon.cfg().get("stm.appHome");
         if (appHome == null) {
-            appHome = SystemPropsUtil.get("user.home") + "/.stm/app";
+            appHome = SystemPropsUtil.get("user.home") + "/.stm";
         }
-        return "%s/%s/%s".formatted(appHome, stmAppDO.getName(), stmAppDO.getVersion());
+        return appHome;
+    }
+
+    /**
+     * 应用软件包位置
+     */
+    public static String getAppPackage() {
+        return getAppHome() + "/app";
+    }
+
+    /**
+     * 应用运行时环境位置
+     */
+    public static String getAppRuntimeHome() {
+        return getAppHome() + "/runtime";
+    }
+
+    /**
+     * 临时目录，用于存放下载的文件
+     */
+    public static String getAppTmp() {
+        return getAppHome() + "/tmp/" + System.currentTimeMillis();
+    }
+
+    public static String getAppPath(StmAppDO stmAppDO) {
+        String appPackage = getAppPackage();
+        return "%s/%s/%s".formatted(appPackage, stmAppDO.getName(), stmAppDO.getVersion());
+    }
+
+    public static String getAppRuntimePath(String appType, Long requiredVersion) {
+        String appRuntimeHome = getAppRuntimeHome();
+        return "%s/%s/%s".formatted(appRuntimeHome, appType.toLowerCase(), requiredVersion);
     }
 
     public static boolean isDebugMode() {
         String stmDebug = Solon.cfg().get("stm.debug");
         return Solon.cfg().isDebugMode() || "1".equals(stmDebug);
     }
+
+    public static String getJavaHome(Long requiredJreVersion) {
+        String appRuntimePath = getAppRuntimePath(ApplicationType.java.getType(), requiredJreVersion);
+        File file = new File(appRuntimePath);
+        // 目录不存在，下载对应版本的 jre
+        if (!file.exists()) {
+            FileUtil.mkdir(file);
+
+            List<String> urls = apiGetAppRuntimeSdkUrls(ApplicationType.java.getType(), requiredJreVersion);
+            String url = urls.get(0).split(",")[0];
+
+//            File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
+            File downloadFile = new File("/Users/songyinyin/.stm/tmp/1683625245243/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.7_7.tar.gz");
+            String downloadFileName = downloadFile.getName();
+            if (downloadFileName.endsWith(".zip")) {
+                ZipUtil.unzip(downloadFile, file);
+            } else if (downloadFileName.endsWith("tar.gz")){
+                GzipUtil.extractTarGZ(downloadFile, appRuntimePath);
+            } else {
+                throw new StmException("不支持的文件格式：%s".formatted(downloadFileName));
+            }
+        }
+        if (isMac()) {
+            String[] list = file.list();
+            if (list != null) {
+                List<String> subFiles = CollUtil.newArrayList(list);
+                subFiles.remove(".DS_Store");
+                appRuntimePath = "%s/%s/Contents/Home".formatted(appRuntimePath, subFiles.get(0));
+            }
+        }
+        if (isDebugMode()) {
+            log.info("javaHome: {}", appRuntimePath);
+        }
+        return appRuntimePath;
+    }
+
 
     ///////////////////////// API /////////////////////////
 
@@ -86,6 +170,19 @@ public class StmUtils {
         }
         stmAppDO.setVersion(stmAppDO.getAppLatestVersion().getVersion());
         return stmAppDO;
+    }
+
+    public static List<String> apiGetAppRuntimeSdkUrls(String appType, Long requiredVersion) {
+        if (StrUtil.isBlank(appType)) {
+            throw new StmException("appType 不能为空");
+        }
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("appType", appType);
+        paramMap.put("requiredAppTypeVersionNum", requiredVersion);
+        paramMap.put("osName", getOsName());
+        paramMap.put("osArch", getOsArch());
+        ONode oNode = apiRequest(API_GET_APP_RUNTIME_SDK_URLS, paramMap);
+        return oNode.toObjectList(String.class);
     }
 
     private static ONode apiRequest(String path, Map<String, Object> paramMap) {

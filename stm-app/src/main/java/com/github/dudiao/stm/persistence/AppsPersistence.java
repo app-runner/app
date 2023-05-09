@@ -3,13 +3,13 @@ package com.github.dudiao.stm.persistence;
 import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.SystemPropsUtil;
 import com.github.dudiao.stm.plugin.StmException;
+import com.github.dudiao.stm.tools.StmContext;
+import com.github.dudiao.stm.tools.StmUtils;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;
 import org.noear.solon.annotation.Component;
-import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.bean.LifecycleBean;
 
 import java.io.File;
@@ -28,14 +28,11 @@ public class AppsPersistence implements LifecycleBean {
     private final Options jsonOptions = Options.def().add(Feature.PrettyFormat).add(Feature.OrderedField);
 
 
-    @Inject(value = "${stm.tools.metadata-path}", required = false)
-    private File toolsJson;
+    private File appsJson;
 
     @Override
     public void start() throws Throwable {
-        if (toolsJson == null) {
-            toolsJson = new File(SystemPropsUtil.get("user.home"), "/.stm/metadata/tools.json");
-        }
+        appsJson = new File(StmUtils.getAppHome(), "/metadata/apps.json");
     }
 
     public int add(StmAppDO plugin) {
@@ -43,14 +40,16 @@ public class AppsPersistence implements LifecycleBean {
 
         List<StmAppDO> plugins = list();
         plugins.add(plugin);
-        FileUtil.writeString(ONode.stringify(plugins, jsonOptions), toolsJson, StandardCharsets.UTF_8);
+        FileUtil.writeString(ONode.stringify(plugins, jsonOptions), appsJson, StandardCharsets.UTF_8);
+        StmContext.clearAppsMeta();
         return 1;
     }
 
     public int remove(String name) {
         List<StmAppDO> plugins = list();
         plugins.removeIf(plugin -> plugin.getName().equals(name));
-        FileUtil.writeString(ONode.stringify(plugins, jsonOptions), toolsJson, StandardCharsets.UTF_8);
+        FileUtil.writeString(ONode.stringify(plugins, jsonOptions), appsJson, StandardCharsets.UTF_8);
+        StmContext.clearAppsMeta();
         return 1;
     }
 
@@ -82,10 +81,16 @@ public class AppsPersistence implements LifecycleBean {
     }
 
     public List<StmAppDO> list() {
-        FileUtil.touch(toolsJson);
-        String pluginStr = FileUtil.readString(toolsJson, StandardCharsets.UTF_8);
+        List<StmAppDO> appsMeta = StmContext.getAppsMeta();
+        if (appsMeta != null) {
+            return appsMeta;
+        }
+        FileUtil.touch(appsJson);
+        String pluginStr = FileUtil.readString(appsJson, StandardCharsets.UTF_8);
         ONode pluginNode = ONode.loadStr(pluginStr, jsonOptions);
-        return pluginNode.toObjectList(StmAppDO.class);
+        List<StmAppDO> appDOList = pluginNode.toObjectList(StmAppDO.class);
+        StmContext.setAppsMeta(appDOList);
+        return appDOList;
     }
 
 }

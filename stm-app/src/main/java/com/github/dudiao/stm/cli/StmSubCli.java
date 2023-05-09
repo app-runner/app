@@ -3,9 +3,6 @@ package com.github.dudiao.stm.cli;
 import cn.hutool.core.date.StopWatch;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.StmContext;
-import com.github.dudiao.stm.tools.StmUtils;
-import com.github.dudiao.stm.tools.StopWatchUtil;
-import org.noear.solon.Solon;
 import org.noear.solon.core.util.LogUtil;
 import picocli.CommandLine;
 
@@ -26,6 +23,9 @@ public interface StmSubCli extends Callable<Integer> {
             return execute;
         } catch (StmException e) {
             LogUtil.global().error(e.getMessage());
+            if (e.getException() != null) {
+                e.printStackTrace();
+            }
             return e.getExitCode();
         }
     }

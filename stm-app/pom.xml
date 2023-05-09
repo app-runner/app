@@ -10,6 +10,10 @@
     <name>stm application</name>
     <description>stm 应用模块</description>
 
+    <properties>
+        <compress.version>1.23.0</compress.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.dudiao</groupId>
@@ -21,6 +25,12 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-http</artifactId>
             <version>${hutool.version}</version>
+        </dependency>
+        <!-- 解压 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${compress.version}</version>
         </dependency>
 
         <!--solon native start-->

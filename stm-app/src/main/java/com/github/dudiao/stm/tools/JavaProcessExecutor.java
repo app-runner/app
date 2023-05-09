@@ -20,6 +20,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.plugin.StmException;
+import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.noear.solon.core.util.LogUtil;
 
@@ -37,6 +38,7 @@ import java.util.function.Consumer;
  *
  * @author Stephane Nicoll
  */
+@Slf4j
 public class JavaProcessExecutor {
 
     private static final int EXIT_CODE_SIGINT = 130;
@@ -61,6 +63,7 @@ public class JavaProcessExecutor {
 
     public JavaProcessExecutor(StmAppDO stmAppDO, String[] appParameters) {
         this.javaApp = stmAppDO;
+        this.javaHome = stmAppDO.getAppRuntimePath();
         this.appParameters = appParameters;
     }
 
@@ -95,8 +98,8 @@ public class JavaProcessExecutor {
                 environmentVariables.put(k.toString(), v.toString());
             }
         });
-        if (Solon.cfg().isDebugMode()) {
-            LogUtil.global().debug("start run java app, work dir=%s, args=%s".formatted(workingDirectory, args));
+        if (StmUtils.isDebugMode()) {
+            log.info("start run java app, work dir=%s, args=%s".formatted(workingDirectory, args));
         }
         return this.run(workingDirectory, args, environmentVariables);
     }

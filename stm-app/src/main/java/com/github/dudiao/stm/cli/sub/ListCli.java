@@ -42,8 +42,10 @@ public class ListCli implements StmSubCli {
         if (!local) {
             List<StmAppDO> stmAppDOS = StmUtils.apiList(null);
             for (StmAppDO stmAppDO : stmAppDOS) {
-                String name = existAppIds.contains(stmAppDO.getId()) ? stmAppDO.getName() + "(local)" : stmAppDO.getName();
-                consoleTable.addBody(name, stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
+                if (existAppIds.contains(stmAppDO.getId())) {
+                    continue;
+                }
+                consoleTable.addBody(stmAppDO.getName(), stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
             }
 
         }

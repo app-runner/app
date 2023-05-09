@@ -8,12 +8,15 @@ public class StmException extends RuntimeException {
 
     private Integer exitCode = 1;
 
+    private Exception exception;
+
     public StmException(String message) {
         super(message);
     }
 
     public StmException(String message, Exception e) {
         super(message, e);
+        this.exception = e;
     }
 
     public StmException(String message, Integer exitCode) {
@@ -23,5 +26,9 @@ public class StmException extends RuntimeException {
 
     public Integer getExitCode() {
         return exitCode;
+    }
+
+    public Exception getException() {
+        return exception;
     }
 }

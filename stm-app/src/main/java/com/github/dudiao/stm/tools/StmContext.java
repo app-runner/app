@@ -1,8 +1,11 @@
 package com.github.dudiao.stm.tools;
 
 import cn.hutool.core.date.StopWatch;
+import com.github.dudiao.stm.persistence.StmAppDO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,25 +17,57 @@ public class StmContext {
     private static final ThreadLocal<Map<String, Object>> context = new ThreadLocal<>();
 
     public static final String STOP_WATCH = "stop_watch";
+    public static final String APPS_META = "apps_meta";
+
+    public static void setAppsMeta(List<StmAppDO> appsMeta) {
+        put(APPS_META, appsMeta);
+    }
+
+    public static List<StmAppDO> getAppsMeta() {
+        return (List<StmAppDO>) get(APPS_META, null);
+    }
+
+    public static void clearAppsMeta() {
+        clear(APPS_META);
+    }
 
     public static void setStopWatch(StopWatch stopWatch) {
+        put(STOP_WATCH, stopWatch);
+    }
+
+    public static StopWatch getStopWatch() {
+        return (StopWatch) get(STOP_WATCH, new StopWatch("default"));
+    }
+
+    /**
+     * 设置上下文
+     *
+     * @param key   类型
+     * @param value 值
+     */
+    public static void put(String key, Object value) {
         Map<String, Object> map = context.get();
         if (map == null) {
             map = new HashMap<>();
             context.set(map);
         }
-        map.put(STOP_WATCH, stopWatch);
+        map.put(key, value);
     }
 
-    public static StopWatch getStopWatch() {
+    /**
+     * 获取某类型的上下文
+     *
+     * @param key          类型
+     * @param defaultValue 默认值
+     */
+    public static Object get(String key, Object defaultValue) {
         Map<String, Object> map = context.get();
         if (map == null) {
-            StopWatch stopWatch = new StopWatch("default");
             map = new HashMap<>();
-            map.put(STOP_WATCH, stopWatch);
-            return stopWatch;
+            map.put(key, defaultValue);
+            return defaultValue;
         }
-        return (StopWatch) map.get(STOP_WATCH);
+        return map.get(key);
     }
 
     public static void clear(String key) {

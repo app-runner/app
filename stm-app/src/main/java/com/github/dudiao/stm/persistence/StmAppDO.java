@@ -40,6 +40,11 @@ public class StmAppDO implements Serializable {
 
     private String toolAppPath;
 
+    /**
+     * 应用运行时以来的环境，比如 jre 的路径，如果不设置，则使用stm配置的对应版本的jre
+     */
+    private String appRuntimePath;
+
     @Data
     public static class JavaDO {
 

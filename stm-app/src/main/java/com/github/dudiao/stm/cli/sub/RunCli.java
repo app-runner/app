@@ -1,11 +1,13 @@
 package com.github.dudiao.stm.cli.sub;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.dudiao.stm.cli.StmSubCli;
 import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.AppHome;
 import com.github.dudiao.stm.tools.JavaProcessExecutor;
+import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -40,6 +42,9 @@ public class RunCli implements StmSubCli {
 
         switch (stmAppDO.getAppType()) {
             case java -> {
+                if (StrUtil.isBlank(stmAppDO.getAppRuntimePath())) {
+                    stmAppDO.setAppRuntimePath(StmUtils.getJavaHome(stmAppDO.getRequiredAppTypeVersionNum()));
+                }
                 JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(stmAppDO, appParameters);
                 return javaProcessExecutor.run(appHome.getDir());
             }

@@ -7,6 +7,7 @@ import com.github.dudiao.stm.cli.StmSubCli;
 import com.github.dudiao.stm.persistence.AppsPersistence;
 import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.plugin.StmException;
+import com.github.dudiao.stm.tools.DownloadStreamProgress;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -52,7 +53,7 @@ public class UpgradeCli implements StmSubCli {
             log.info("应用[{}]最新版本：{}，当前版本：{}", name, stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion());
         }
 
-        File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new InstallCli.DownloadStreamProgress());
+        File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new DownloadStreamProgress());
         stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
         appsPersistence.add(stmAppDO);
         log.info("应用[{}]升级成功", name);
