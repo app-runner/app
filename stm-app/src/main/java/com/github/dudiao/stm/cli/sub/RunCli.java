@@ -33,7 +33,7 @@ public class RunCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        StmAppDO stmAppDO = appsPersistence.get(name);
+        StmAppDO stmAppDO = appsPersistence.getUsed(name);
         if (stmAppDO == null) {
             throw new StmException("应用不存在");
         }

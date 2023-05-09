@@ -1,11 +1,14 @@
 package com.github.dudiao.stm.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.StreamProgress;
+import cn.hutool.core.io.unit.DataSizeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import com.github.dudiao.stm.cli.StmSubCli;
 import com.github.dudiao.stm.persistence.ApplicationType;
-import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.persistence.AppsPersistence;
+import com.github.dudiao.stm.persistence.StmAppDO;
 import com.github.dudiao.stm.plugin.StmException;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -42,26 +45,71 @@ public class InstallCli implements StmSubCli {
 
     @Override
     public Integer execute() {
+        StmAppDO stmAppDO;
         if (path != null) {
-            if (requiredVersion == null) {
-                throw new StmException("请指定应用运行的最低版本，比如Java应用需要指定Java版本，17");
-            }
-            StmAppDO stmAppDO = new StmAppDO();
-            stmAppDO.setName(name);
-            stmAppDO.setAppType(getAppType(path));
-            if (ApplicationType.java.equals(stmAppDO.getAppType())) {
-                stmAppDO.setJava(new StmAppDO.JavaDO());
-                stmAppDO.setRequiredAppTypeVersionNum(requiredVersion);
-            }
-            stmAppDO.setVersion(version);
-            String installedAppPath = StmUtils.getAppPath(stmAppDO) + "/" + path.getName();
-            File copy = FileUtil.copy(path, new File(installedAppPath), true);
-            log.info("将应用[{}]复制到：{}", name, copy.getAbsolutePath());
-            stmAppDO.setToolAppPath(copy.getAbsolutePath());
-            appsPersistence.add(stmAppDO);
-            log.info("应用安装[{}]成功", name);
+            stmAppDO = localInstall();
+        } else {
+            appsPersistence.existAndThrow(name);
+            stmAppDO = StmUtils.apiLatestVersion(name, null);
+            File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new DownloadStreamProgress());
+            stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
         }
+        appsPersistence.add(stmAppDO);
+        log.info("应用[{}]安装成功", name);
         return 0;
+    }
+
+    private StmAppDO localInstall() {
+        if (requiredVersion == null) {
+            throw new StmException("请指定应用运行的最低版本，比如Java应用需要指定Java版本，17");
+        }
+        StmAppDO stmAppDO = new StmAppDO();
+        stmAppDO.setName(name);
+        stmAppDO.setAppType(getAppType(path));
+        if (ApplicationType.java.equals(stmAppDO.getAppType())) {
+            stmAppDO.setJava(new StmAppDO.JavaDO());
+            stmAppDO.setRequiredAppTypeVersionNum(requiredVersion);
+        }
+        stmAppDO.setVersion(version);
+        String installedAppPath = StmUtils.getAppPath(stmAppDO) + "/" + path.getName();
+        File copy = FileUtil.copy(path, new File(installedAppPath), true);
+        log.info("将应用[{}]复制到：{}", name, copy.getAbsolutePath());
+        stmAppDO.setToolAppPath(copy.getAbsolutePath());
+        return stmAppDO;
+    }
+
+    static class DownloadStreamProgress implements StreamProgress {
+
+        private double percent = 10;
+
+        private boolean isPrint = false;
+
+        @Override
+        public void start() {
+            System.out.print("开始下载");
+        }
+
+        @Override
+        public void progress(long total, long progressSize) {
+            if (total > 0) {
+                if (!isPrint) {
+                    String format = DataSizeUtil.format(total);
+                    System.out.printf("，总大小：%s. ->", format);
+                    isPrint = true;
+                }
+                double progressPercentage = Math.floor(((float) progressSize / total) * 100);
+                if (progressPercentage > percent) {
+                    System.out.print("->");
+                    percent += 10;
+                }
+            }
+
+        }
+
+        @Override
+        public void finish() {
+            System.out.println("\n下载完成");
+        }
     }
 
     private ApplicationType getAppType(File file) {

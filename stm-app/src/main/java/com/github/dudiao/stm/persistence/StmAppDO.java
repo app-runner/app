@@ -18,23 +18,27 @@ public class StmAppDO implements Serializable {
 
     private String name;
 
-    private String version;
-
     private String author;
 
-    private String description;
-
-    private String toolAppPath;
-
     private ApplicationType appType;
+
+    private String description;
 
     /**
      * 应用运行时，所需的环境版本
      */
     private Long requiredAppTypeVersionNum;
 
+    private StmAppVersionDO appLatestVersion;
+
+
+    // 以下字段 仅在 持久化到元数据 时使用
+
+    private String version;
+
     private JavaDO java;
 
+    private String toolAppPath;
 
     @Data
     public static class JavaDO {
