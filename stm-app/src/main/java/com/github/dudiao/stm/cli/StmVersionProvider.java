@@ -4,6 +4,8 @@ import com.github.dudiao.stm.tools.StmUtils;
 import org.noear.solon.Solon;
 import picocli.CommandLine;
 
+import java.nio.charset.Charset;
+
 /**
  * @author songyinyin
  * @since 2023/4/21 18:59
@@ -16,9 +18,13 @@ public class StmVersionProvider implements CommandLine.IVersionProvider {
     public String[] getVersion() throws Exception {
         String solonVersion = String.format(":: Solon  :: v(%s)", Solon.version());
         String stmVersion = String.format(":: STM :: v(%s)", version);
-        String osName = StmUtils.getOsName();
-        String osArch = StmUtils.getOsArch();
-        String sysInfo = "STM run in: %s (%s)".formatted(osName, osArch);
-        return new String[]{solonVersion, stmVersion, sysInfo};
+        if (StmUtils.isDebugMode()) {
+            String osName = StmUtils.getOsName();
+            String osArch = StmUtils.getOsArch();
+            String sysInfo = "stm run in: %s (%s)".formatted(osName, osArch);
+            String charsetInfo = "default charset: %s".formatted(Charset.defaultCharset());
+            return new String[]{solonVersion, stmVersion, sysInfo, charsetInfo};
+        }
+        return new String[]{solonVersion, stmVersion};
     }
 }
