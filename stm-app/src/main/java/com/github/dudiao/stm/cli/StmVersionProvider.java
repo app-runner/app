@@ -10,7 +10,7 @@ import picocli.CommandLine;
  */
 public class StmVersionProvider implements CommandLine.IVersionProvider {
 
-    public static final String version = "0.0.2";
+    public static final String version = "0.0.3";
 
     @Override
     public String[] getVersion() throws Exception {
