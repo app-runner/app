@@ -49,6 +49,10 @@ public class JavaExecutable {
         File command = new File(bin, "java.exe");
         command = command.exists() ? command : new File(bin, "java");
         Assert.state(command.exists(), () -> "Unable to find java in " + javaHome);
+        // 添加执行权限
+        if (!command.canExecute()) {
+            command.setExecutable(true);
+        }
         return command;
     }
 

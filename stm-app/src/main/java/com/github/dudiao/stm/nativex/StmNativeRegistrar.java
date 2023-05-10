@@ -1,6 +1,7 @@
 package com.github.dudiao.stm.nativex;
 
 import com.github.dudiao.stm.persistence.StmAppDO;
+import com.github.dudiao.stm.persistence.StmAppVersionDO;
 import com.github.dudiao.stm.tools.StmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -21,15 +22,17 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
         nativeMetadata.registerSerialization(StmAppDO.class);
+        nativeMetadata.registerSerialization(StmAppVersionDO.class);
+
         nativeMetadata.registerArg("--enable-http");
         nativeMetadata.registerArg("--enable-https");
 
-        if (StmUtils.isWindows()) {
-            log.info("当前系统为 Windows，默认编码为 {}", Charset.defaultCharset());
-            nativeMetadata.registerArg("-H:+AddAllCharsets", "-H:DefaultLocale=zh-Hans-CN");
-        } else {
-            log.info("当前系统为 Linux or Mac，默认编码为 {}", Charset.defaultCharset());
-            nativeMetadata.registerArg("-H:DefaultCharset=UTF-8", "-H:DefaultLocale=zh-Hans-CN");
-        }
+//        if (StmUtils.isWindows()) {
+//            log.info("当前系统为 Windows，默认编码为 {}", Charset.defaultCharset());
+//            nativeMetadata.registerArg("-H:+AddAllCharsets", "-H:DefaultLocale=zh-Hans-CN");
+//        } else {
+//            log.info("当前系统为 Linux or Mac，默认编码为 {}", Charset.defaultCharset());
+//            nativeMetadata.registerArg("-H:DefaultCharset=UTF-8", "-H:DefaultLocale=zh-Hans-CN");
+//        }
     }
 }
