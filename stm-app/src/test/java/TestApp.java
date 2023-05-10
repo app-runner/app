@@ -1,3 +1,4 @@
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.noear.solon.aot.Settings;
@@ -11,13 +12,14 @@ import java.util.Arrays;
  * @author songyinyin
  * @since 2023/5/2 11:39
  */
+@Slf4j
 @Ignore
 public class TestApp {
 
     @Test
     public void testCharset() {
-        System.out.println("1. default charset: " + System.getProperty("file.encoding"));
-        System.out.println("2. default charset: " + Charset.defaultCharset());
+        log.info("1. default charset: " + System.getProperty("file.encoding"));
+        log.info("2. default charset: " + Charset.defaultCharset());
     }
 
     public void test() throws ClassNotFoundException {

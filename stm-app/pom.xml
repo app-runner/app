@@ -87,7 +87,7 @@
                 <artifactId>solon-maven-plugin</artifactId>
                 <version>${solon.version}</version>
                 <configuration>
-                    <arguments>-Dfile.encoding=UTF-8</arguments>
+                    <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
                 </configuration>
             </plugin>
         </plugins>
