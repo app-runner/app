@@ -86,6 +86,9 @@
                 <groupId>org.noear</groupId>
                 <artifactId>solon-maven-plugin</artifactId>
                 <version>${solon.version}</version>
+                <configuration>
+                    <arguments>-Dfile.encoding=UTF-8</arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
