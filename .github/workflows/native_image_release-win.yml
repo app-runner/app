@@ -37,13 +37,12 @@ jobs:
     - name: Build with Maven
       run: |
         sh .github/build-gh.sh
-        cp stm-app/target/stm* .
     # 压缩文件
     - name: Archive zip
       uses: thedoctor0/zip-release@master
       with:
         type: 'zip'
-        path: 'stm*'
+        path: 'stm-app/target/stm*'
         filename: stm-${{ matrix.os }}.zip
         exclusions: 'stm*.txt stm*.jar stm*.jar.original'
     # 上传构建产物
