@@ -79,6 +79,7 @@
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
                     </compilerArgs>
+                    <encoding>${maven.compiler.encoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
