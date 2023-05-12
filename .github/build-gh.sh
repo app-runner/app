@@ -2,9 +2,9 @@
 
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
-mvn clean install -DskipTests -pl stm-common -am --no-transfer-progress
+mvn clean install -DskipTests -pl common -am --no-transfer-progress
 
-cd stm-app || exit
+cd app || exit
 
 mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
 

@@ -19,9 +19,9 @@ sh build.sh
 示例项目地址：https://github.com/dudiao/stm-examples
 
 ```shell
-stm --help
+app --help
 
-stm install examples -p /Users/yourpath/stm-examples.jar
+app install examples -p /Users/yourpath/stm-examples.jar
 
-stm run examples -n abc -l
+app run examples
 ```

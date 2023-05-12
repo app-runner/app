@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.apprunner</groupId>
-        <artifactId>stm</artifactId>
+        <artifactId>app-parent</artifactId>
         <version>0.0.3</version>
     </parent>
     <artifactId>common</artifactId>

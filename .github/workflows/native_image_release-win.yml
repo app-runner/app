@@ -42,20 +42,20 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         type: 'zip'
-        path: 'stm-app/target/stm*'
-        filename: stm-${{ matrix.os }}.zip
-        exclusions: 'stm*.txt stm*.jar stm*.jar.original'
+        path: 'app/target/app*'
+        filename: app-${{ matrix.os }}
+        exclusions: 'app*.txt app*.jar app*.jar.original'
     # 上传构建产物
     - name: Upload artifact
       uses: actions/upload-artifact@v3.0.0
       with:
-        name: stm-${{ matrix.os }}.zip
-        path: stm-${{ matrix.os }}.zip
+        name: app-${{ matrix.os }}.zip
+        path: app-${{ matrix.os }}.zip
     # GitHub 上创建 release
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: stm-${{ matrix.os }}.zip
+        files: app-${{ matrix.os }}.zip
         prerelease: true
         token: ${{ secrets.GITHUB_TOKEN }}
