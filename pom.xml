@@ -11,16 +11,16 @@
         <relativePath />
     </parent>
 
-    <groupId>com.github.dudiao</groupId>
-    <artifactId>stm</artifactId>
+    <groupId>io.github.apprunner</groupId>
+    <artifactId>app-parent</artifactId>
     <version>0.0.3</version>
     
     <packaging>pom</packaging>
 
-    <description>Solon Toolkit Manager</description>
+    <description>App runner</description>
     <modules>
-        <module>stm-app</module>
-        <module>stm-common</module>
+        <module>app</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -38,8 +38,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.dudiao</groupId>
-                <artifactId>stm-common</artifactId>
+                <groupId>io.github.apprunner</groupId>
+                <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
