@@ -3,11 +3,11 @@
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
 
-mvn clean install -DskipTests -P tencent -pl stm-common -am --no-transfer-progress package
+mvn clean install -DskipTests -P tencent -pl common -am --no-transfer-progress
 
-cd stm-app || exit
+cd app || exit
 
-mvn clean native:compile -P tencent,native --no-transfer-progress package
+mvn clean native:compile -P tencent,native --no-transfer-progress
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`

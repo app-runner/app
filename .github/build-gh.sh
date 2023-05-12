@@ -6,7 +6,7 @@ mvn clean install -DskipTests -pl stm-common -am --no-transfer-progress
 
 cd stm-app || exit
 
-mvn clean native:compile -P native --no-transfer-progress
+mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`

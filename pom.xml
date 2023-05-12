@@ -11,21 +11,22 @@
         <relativePath />
     </parent>
 
-    <groupId>com.github.dudiao</groupId>
-    <artifactId>stm</artifactId>
+    <groupId>io.github.apprunner</groupId>
+    <artifactId>app-parent</artifactId>
     <version>0.0.3</version>
     
     <packaging>pom</packaging>
 
-    <description>Solon Toolkit Manager</description>
+    <description>App runner</description>
     <modules>
-        <module>stm-app</module>
-        <module>stm-common</module>
+        <module>app</module>
+        <module>common</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
         <picocli.version>4.7.3</picocli.version>
         <jline.version>3.23.0</jline.version>
@@ -37,8 +38,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.dudiao</groupId>
-                <artifactId>stm-common</artifactId>
+                <groupId>io.github.apprunner</groupId>
+                <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -65,7 +66,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
+                    <encoding>${maven.compiler.encoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>
