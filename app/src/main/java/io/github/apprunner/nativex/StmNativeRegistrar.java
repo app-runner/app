@@ -22,7 +22,7 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
         nativeMetadata.registerSerialization(StmAppVersionDO.class);
 
         nativeMetadata.registerArg("--enable-http");
-//        nativeMetadata.registerArg("--enable-https");
+        nativeMetadata.registerArg("--enable-https");
 
         nativeMetadata.registerArg("-H:+AddAllCharsets", "-Dfile.encoding=UTF-8");
 
