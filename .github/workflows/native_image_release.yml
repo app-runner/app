@@ -1,4 +1,4 @@
-name: native image release win
+name: native image release
 
 on:
   workflow_dispatch:
@@ -42,7 +42,8 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          path: 'app/target/app*'
+          directory: 'app/target'
+          path: 'app*'
           filename: app-${{ matrix.os }}
           exclusions: 'app*.txt app*.jar app*.jar.original'
       # 上传构建产物
