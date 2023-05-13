@@ -46,7 +46,7 @@ public class App {
         stopWatch.stop();
         int execute = commandLine.execute(args);
         if (StmUtils.isDebugMode()) {
-            log.info("执行耗时：{} ms, {}", stopWatch.getTotalTimeMillis(), StopWatchUtil.prettyPrint(stopWatch));
+            log.info("time：{} ms, {}", stopWatch.getTotalTimeMillis(), StopWatchUtil.prettyPrint(stopWatch));
         }
         if (!NativeDetector.isAotRuntime()) {
             Solon.stopBlock(true, -1, execute);
