@@ -117,8 +117,7 @@ public class StmUtils {
             List<String> urls = apiGetAppRuntimeSdkUrls(ApplicationType.java.getType(), requiredJreVersion);
             String url = urls.get(0).split(",")[0];
 
-//            File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
-            File downloadFile = new File("/Users/songyinyin/.stm/tmp/1683625245243/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.7_7.tar.gz");
+            File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
             String downloadFileName = downloadFile.getName();
             if (downloadFileName.endsWith(".zip")) {
                 ZipUtil.unzip(downloadFile, file);
