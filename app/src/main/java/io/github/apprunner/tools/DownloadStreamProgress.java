@@ -15,7 +15,7 @@ public class DownloadStreamProgress implements StreamProgress {
 
     @Override
     public void start() {
-        System.out.print("开始下载");
+        System.out.print("start download ->");
     }
 
     @Override
@@ -23,7 +23,7 @@ public class DownloadStreamProgress implements StreamProgress {
         if (total > 0) {
             if (!isPrint) {
                 String format = DataSizeUtil.format(total);
-                System.out.printf("，总大小：%s. ->", format);
+                System.out.printf(", total size: %s. ->", format);
                 isPrint = true;
             }
             double progressPercentage = Math.floor(((float) progressSize / total) * 100);
@@ -37,6 +37,6 @@ public class DownloadStreamProgress implements StreamProgress {
 
     @Override
     public void finish() {
-        System.out.println("\n下载完成");
+        System.out.println("\nfinish download.");
     }
 }
