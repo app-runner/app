@@ -53,7 +53,9 @@ public class UpgradeCli implements AppRunnerSubCli {
             log.info("Latest version of application [{}]: {}, current version: {}", name, appDO.getAppLatestVersion().getVersion(), currApp.getVersion());
         }
 
-        File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
+        String url = StrUtil.isNotBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGithubDownloadUrl() : appDO.getAppLatestVersion().getGiteeDownloadUrl();
+
+        File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
         appDO.setToolAppPath(downloadFile.getAbsolutePath());
         appsPersistence.add(appDO);
         log.info("Application [{}] upgraded successfully", name);

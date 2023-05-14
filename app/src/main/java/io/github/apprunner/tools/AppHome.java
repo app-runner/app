@@ -109,7 +109,10 @@ public class AppHome {
         return homeDir.getAbsoluteFile();
     }
 
-    private File findDefaultHomeDir() {
+    /**
+     * 返回用户执行命令的目录
+     */
+    public File findDefaultHomeDir() {
         String userDir = System.getProperty("user.dir");
         return new File(StrUtil.isNotBlank(userDir) ? userDir : ".");
     }

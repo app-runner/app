@@ -36,8 +36,6 @@ public class AppsPersistence implements LifecycleBean {
     }
 
     public int add(AppDO plugin) {
-        existAndThrow(plugin.getName());
-
         List<AppDO> plugins = list();
         plugins.add(plugin);
         FileUtil.writeString(ONode.stringify(plugins, jsonOptions), appsJson, StandardCharsets.UTF_8);

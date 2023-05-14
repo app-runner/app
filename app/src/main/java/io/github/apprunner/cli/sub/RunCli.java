@@ -46,7 +46,7 @@ public class RunCli implements AppRunnerSubCli {
                     appDO.setAppRuntimePath(AppRunnerUtils.getJavaHome(appDO.getRequiredAppTypeVersionNum()));
                 }
                 JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(appDO, appParameters);
-                return javaProcessExecutor.run(appHome.getDir());
+                return javaProcessExecutor.run(appHome.findDefaultHomeDir());
             }
             case shell -> {
                 log.info("shell exe");
