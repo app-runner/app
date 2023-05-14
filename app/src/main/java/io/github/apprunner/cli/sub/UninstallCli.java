@@ -17,10 +17,10 @@ import picocli.CommandLine;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "uninstall", description = "卸载应用")
+@CommandLine.Command(name = "uninstall", description = "Uninstalling apps")
 public class UninstallCli implements StmSubCli {
 
-    @CommandLine.Parameters(index = "0", description = "应用名称")
+    @CommandLine.Parameters(index = "0", description = "application name")
     private String name;
 
     @Inject
@@ -30,13 +30,13 @@ public class UninstallCli implements StmSubCli {
     public Integer execute() {
         StmAppDO stmAppDO = appsPersistence.getUsed(name);
         if (stmAppDO == null) {
-            throw new StmException("应用不存在");
+            throw new StmException("The application [%s] does not exist".formatted(name));
         }
         String appPath = StmUtils.getAppPath(stmAppDO);
         appsPersistence.remove(name);
         FileUtil.del(appPath);
-        log.info("删除文件:{}", appPath);
-        log.info("应用[{}]卸载成功", name);
+        log.info("delete file: {}", appPath);
+        log.info("Application [{}] uninstalled successfully", name);
         return null;
     }
 }

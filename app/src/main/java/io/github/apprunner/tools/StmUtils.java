@@ -124,7 +124,7 @@ public class StmUtils {
             } else if (downloadFileName.endsWith("tar.gz")){
                 GzipUtil.extractTarGZ(downloadFile, appRuntimePath);
             } else {
-                throw new StmException("不支持的文件格式：%s".formatted(downloadFileName));
+                throw new StmException("Unsupported file type: %s".formatted(downloadFileName));
             }
         }
         if (isMac()) {
@@ -154,7 +154,7 @@ public class StmUtils {
 
     public static StmAppDO apiLatestVersion(String appName, String version) {
         if (StrUtil.isBlank(appName)) {
-            throw new StmException("appName 不能为空");
+            throw new StmException("appName not null");
         }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appName", appName);
@@ -162,7 +162,7 @@ public class StmUtils {
         ONode oNode = apiRequest(API_LATEST_VERSION, paramMap);
         StmAppDO stmAppDO = oNode.toObject(StmAppDO.class);
         if (stmAppDO == null) {
-            throw new StmException("未找到应用：%s".formatted(appName));
+            throw new StmException("App not found: %s".formatted(appName));
         }
         stmAppDO.setVersion(stmAppDO.getAppLatestVersion().getVersion());
         return stmAppDO;
@@ -170,7 +170,7 @@ public class StmUtils {
 
     public static List<String> apiGetAppRuntimeSdkUrls(String appType, Long requiredVersion) {
         if (StrUtil.isBlank(appType)) {
-            throw new StmException("appType 不能为空");
+            throw new StmException("appType not null");
         }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appType", appType);
@@ -194,7 +194,7 @@ public class StmUtils {
         ONode oNode = ONode.loadStr(response);
         int status = oNode.get("status").getInt();
         if (status != 0) {
-            throw new StmException("请求失败(%s)：%s".formatted(status, oNode.get("msg").getString()));
+            throw new StmException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
         }
         return oNode.get("data");
     }

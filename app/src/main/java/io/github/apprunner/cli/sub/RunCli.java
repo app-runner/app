@@ -19,7 +19,7 @@ import picocli.CommandLine;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "run", description = "运行应用")
+@CommandLine.Command(name = "run", description = "Running Application")
 public class RunCli implements StmSubCli {
 
     @Inject
@@ -27,17 +27,17 @@ public class RunCli implements StmSubCli {
 
     private final AppHome appHome = new AppHome();
 
-    @CommandLine.Parameters(index = "0", description = "应用名称")
+    @CommandLine.Parameters(index = "0", description = "application name")
     private String name;
 
-    @CommandLine.Parameters(index = "1..*", description = "运行参数")
+    @CommandLine.Parameters(index = "1..*", description = "run parameters")
     private String[] appParameters;
 
     @Override
     public Integer execute() {
         StmAppDO stmAppDO = appsPersistence.getUsed(name);
         if (stmAppDO == null) {
-            throw new StmException("应用不存在");
+            throw new StmException("The application [%s] does not exist".formatted(name));
         }
 
         switch (stmAppDO.getAppType()) {
@@ -51,7 +51,7 @@ public class RunCli implements StmSubCli {
             case shell -> {
                 log.info("shell exe");
             }
-            default -> throw new StmException("暂不支持该类型[%s]的程序运行".formatted(stmAppDO.getAppType()));
+            default -> throw new StmException("The program running of this type [%s] is currently not supported".formatted(stmAppDO.getAppType()));
         }
         return 0;
     }

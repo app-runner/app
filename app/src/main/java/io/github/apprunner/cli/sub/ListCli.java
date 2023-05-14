@@ -18,10 +18,10 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "list", description = "列出所有的支持的应用")
+@CommandLine.Command(name = "list", description = "List all supported applications")
 public class ListCli implements StmSubCli {
 
-    @CommandLine.Option(names = {"-l", "--local"}, description = "是否只列出本地的应用")
+    @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed")
     private boolean local;
 
     @Inject

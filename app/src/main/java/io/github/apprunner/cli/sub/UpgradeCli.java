@@ -24,15 +24,15 @@ import java.io.File;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "upgrade", description = "升级应用")
+@CommandLine.Command(name = "upgrade", description = "Upgrade application")
 public class UpgradeCli implements StmSubCli {
 
 
-    @CommandLine.Parameters(index = "0", description = "应用名称")
+    @CommandLine.Parameters(index = "0", description = "application name")
     private String name;
 
 
-    @CommandLine.Option(names = {"-v", "--version"}, description = "指定升级的版本号")
+    @CommandLine.Option(names = {"-v", "--version"}, description = "Specify the version number for the upgrade, if not specified, the latest version is used")
     private String version;
 
     @Inject
@@ -42,21 +42,21 @@ public class UpgradeCli implements StmSubCli {
     public Integer execute() {
         StmAppDO currApp = appsPersistence.getUsed(name);
         if (currApp == null) {
-            throw new StmException("应用不存在，请先安装应用");
+            throw new StmException("The application [%s] does not exist".formatted(name));
         }
         StmAppDO stmAppDO = StmUtils.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
             if (StrUtil.equals(stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {
-                log.info("应用[{}]已经是最新版本，无需升级", name);
+                log.info("The application [{}] is already the latest version and does not need to be upgraded", name);
                 return 0;
             }
-            log.info("应用[{}]最新版本：{}，当前版本：{}", name, stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion());
+            log.info("Latest version of application [{}]: {}, current version: {}", name, stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion());
         }
 
         File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new DownloadStreamProgress());
         stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
         appsPersistence.add(stmAppDO);
-        log.info("应用[{}]升级成功", name);
+        log.info("Application [{}] upgraded successfully", name);
         return 0;
     }
 

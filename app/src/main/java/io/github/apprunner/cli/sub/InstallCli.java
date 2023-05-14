@@ -23,20 +23,20 @@ import java.io.File;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "install", description = "安装应用")
+@CommandLine.Command(name = "install", description = "Installing Applications")
 public class InstallCli implements StmSubCli {
 
 
-    @CommandLine.Parameters(index = "0", description = "应用名称")
+    @CommandLine.Parameters(index = "0", description = "application name")
     private String name;
 
-    @CommandLine.Option(names = {"-p", "--path"}, description = "本地应用文件路径")
+    @CommandLine.Option(names = {"-p", "--path"}, description = "Local application file path")
     private File path;
 
-    @CommandLine.Option(names = {"-rv", "--requiredVersion"}, description = "应用运行的最低版本，比如Java应用需要指定Java版本，17")
+    @CommandLine.Option(names = {"-rv", "--requiredVersion"}, description = "The minimum version of the application to run, for example, Java applications need to specify the Java version, 17")
     private Long requiredVersion;
 
-    @CommandLine.Option(names = {"-v", "--version"}, defaultValue = "local_version", description = "版本号")
+    @CommandLine.Option(names = {"-v", "--version"}, defaultValue = "local_version", description = "version")
     private String version;
 
     @Inject
@@ -54,13 +54,13 @@ public class InstallCli implements StmSubCli {
             stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
         }
         appsPersistence.add(stmAppDO);
-        log.info("应用[{}]安装成功", name);
+        log.info("Application [{}] installed successfully", name);
         return 0;
     }
 
     private StmAppDO localInstall() {
         if (requiredVersion == null) {
-            throw new StmException("请指定应用运行的最低版本，比如Java应用需要指定Java版本，17");
+            throw new StmException("Please specify the minimum version that the application runs, for example, Java applications need to specify the Java version, 17");
         }
         StmAppDO stmAppDO = new StmAppDO();
         stmAppDO.setName(name);
@@ -72,7 +72,7 @@ public class InstallCli implements StmSubCli {
         stmAppDO.setVersion(version);
         String installedAppPath = StmUtils.getAppPath(stmAppDO) + "/" + path.getName();
         File copy = FileUtil.copy(path, new File(installedAppPath), true);
-        log.info("将应用[{}]复制到：{}", name, copy.getAbsolutePath());
+        log.info("copy application [{}] to: {}", name, copy.getAbsolutePath());
         stmAppDO.setToolAppPath(copy.getAbsolutePath());
         return stmAppDO;
     }
@@ -87,6 +87,6 @@ public class InstallCli implements StmSubCli {
                 }
             }
         }
-        throw new StmException("不支持的文件后缀");
+        throw new StmException("unsupported file suffix");
     }
 }

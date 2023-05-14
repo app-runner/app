@@ -70,7 +70,7 @@ public class AppsPersistence implements LifecycleBean {
      */
     public void existAndThrow(String appName) {
         if (exist(appName)) {
-            throw new StmException(String.format("插件 [%s] 已存在", appName));
+            throw new StmException(String.format("Application [%s] already exists", appName));
         }
     }
 
