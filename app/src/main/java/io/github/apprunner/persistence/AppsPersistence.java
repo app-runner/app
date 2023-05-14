@@ -3,9 +3,9 @@ package io.github.apprunner.persistence;
 import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import io.github.apprunner.tools.StmContext;
-import io.github.apprunner.tools.StmUtils;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.tools.AppRunnerContext;
+import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.plugin.AppRunnerException;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;
@@ -32,35 +32,35 @@ public class AppsPersistence implements LifecycleBean {
 
     @Override
     public void start() throws Throwable {
-        appsJson = new File(StmUtils.getAppHome(), "/metadata/apps.json");
+        appsJson = new File(AppRunnerUtils.getAppHome(), "/metadata/apps.json");
     }
 
-    public int add(StmAppDO plugin) {
+    public int add(AppDO plugin) {
         existAndThrow(plugin.getName());
 
-        List<StmAppDO> plugins = list();
+        List<AppDO> plugins = list();
         plugins.add(plugin);
         FileUtil.writeString(ONode.stringify(plugins, jsonOptions), appsJson, StandardCharsets.UTF_8);
-        StmContext.clearAppsMeta();
+        AppRunnerContext.clearAppsMeta();
         return 1;
     }
 
     public int remove(String name) {
-        List<StmAppDO> plugins = list();
+        List<AppDO> plugins = list();
         plugins.removeIf(plugin -> plugin.getName().equals(name));
         FileUtil.writeString(ONode.stringify(plugins, jsonOptions), appsJson, StandardCharsets.UTF_8);
-        StmContext.clearAppsMeta();
+        AppRunnerContext.clearAppsMeta();
         return 1;
     }
 
     /**
      * 获取当前使用的应用版本
      */
-    public StmAppDO getUsed(String name) {
-        List<StmAppDO> plugins = list();
+    public AppDO getUsed(String name) {
+        List<AppDO> plugins = list();
         return plugins.stream()
             .filter(plugin -> plugin.getName().equals(name))
-            .max(Comparator.comparing(StmAppDO::getVersion, VersionComparator.INSTANCE)).orElse(null);
+            .max(Comparator.comparing(AppDO::getVersion, VersionComparator.INSTANCE)).orElse(null);
     }
 
     /**
@@ -70,26 +70,26 @@ public class AppsPersistence implements LifecycleBean {
      */
     public void existAndThrow(String appName) {
         if (exist(appName)) {
-            throw new StmException(String.format("Application [%s] already exists", appName));
+            throw new AppRunnerException(String.format("Application [%s] already exists", appName));
         }
     }
 
     public boolean exist(String appName) {
-        List<StmAppDO> plugins = list();
-        Optional<StmAppDO> first = plugins.stream().filter(e -> StrUtil.equals(e.getName(), appName)).findFirst();
+        List<AppDO> plugins = list();
+        Optional<AppDO> first = plugins.stream().filter(e -> StrUtil.equals(e.getName(), appName)).findFirst();
         return first.isPresent();
     }
 
-    public List<StmAppDO> list() {
-        List<StmAppDO> appsMeta = StmContext.getAppsMeta();
+    public List<AppDO> list() {
+        List<AppDO> appsMeta = AppRunnerContext.getAppsMeta();
         if (appsMeta != null) {
             return appsMeta;
         }
         FileUtil.touch(appsJson);
         String pluginStr = FileUtil.readString(appsJson, StandardCharsets.UTF_8);
         ONode pluginNode = ONode.loadStr(pluginStr, jsonOptions);
-        List<StmAppDO> appDOList = pluginNode.toObjectList(StmAppDO.class);
-        StmContext.setAppsMeta(appDOList);
+        List<AppDO> appDOList = pluginNode.toObjectList(AppDO.class);
+        AppRunnerContext.setAppsMeta(appDOList);
         return appDOList;
     }
 

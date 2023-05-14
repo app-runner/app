@@ -4,15 +4,15 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import cn.hutool.core.date.StopWatch;
-import io.github.apprunner.cli.StmCli;
-import io.github.apprunner.cli.StmSubCli;
-import io.github.apprunner.tools.StmContext;
-import io.github.apprunner.tools.StmUtils;
+import io.github.apprunner.cli.AppRunnerCli;
+import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.tools.AppRunnerContext;
+import io.github.apprunner.tools.AppRunnerUtils;
 import io.github.apprunner.tools.StopWatchUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
-import org.noear.solon.core.NativeDetector;
+import org.noear.solon.core.runtime.NativeDetector;
 import org.noear.solon.core.util.LogUtil;
 import org.noear.solon.logging.utils.LogUtilToSlf4j;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ import java.util.List;
 public class App {
 
     public static void main(String[] args) {
-        StopWatch stopWatch = new StopWatch("STM");
-        StmContext.setStopWatch(stopWatch);
-        stopWatch.start("StmApp start");
+        StopWatch stopWatch = new StopWatch("AppRunner");
+        AppRunnerContext.setStopWatch(stopWatch);
+        stopWatch.start("AppRunner start");
         // 设置日志级别
         setLogLevel(args);
 
@@ -35,17 +35,17 @@ public class App {
         Solon.start(App.class, args);
         stopWatch.stop();
 
-        // stm cli
-        stopWatch.start("StmCli init");
-        StmCli stmCli = Solon.context().getBean(StmCli.class);
-        CommandLine commandLine = new CommandLine(stmCli);
-        List<StmSubCli> stmSubClis = Solon.context().getBeansOfType(StmSubCli.class);
-        for (StmSubCli stmSubCli : stmSubClis) {
-            commandLine.addSubcommand(stmSubCli.getCommandLine());
+        // apprunner cli
+        stopWatch.start("AppRunnerCli init");
+        AppRunnerCli appRunnerCli = Solon.context().getBean(AppRunnerCli.class);
+        CommandLine commandLine = new CommandLine(appRunnerCli);
+        List<AppRunnerSubCli> appRunnerSubClis = Solon.context().getBeansOfType(AppRunnerSubCli.class);
+        for (AppRunnerSubCli appRunnerSubCli : appRunnerSubClis) {
+            commandLine.addSubcommand(appRunnerSubCli.getCommandLine());
         }
         stopWatch.stop();
         int execute = commandLine.execute(args);
-        if (StmUtils.isDebugMode()) {
+        if (AppRunnerUtils.isDebugMode()) {
             log.info("time：{} ms, {}", stopWatch.getTotalTimeMillis(), StopWatchUtil.prettyPrint(stopWatch));
         }
         if (!NativeDetector.isAotRuntime()) {
@@ -55,7 +55,7 @@ public class App {
 
     private static void setLogLevel(String[] args) {
         for (String arg : args) {
-            if (arg.contains("debug=1") && !arg.contains("stm.debug=1")) {
+            if (arg.contains("debug=1") && !arg.contains("apprunner.debug=1")) {
                 return;
             }
         }

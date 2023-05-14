@@ -1,7 +1,7 @@
 package io.github.apprunner.tools;
 
 import cn.hutool.core.date.StopWatch;
-import io.github.apprunner.persistence.StmAppDO;
+import io.github.apprunner.persistence.AppDO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,19 +11,19 @@ import java.util.Map;
  * @author songyinyin
  * @since 2023/5/3 12:34
  */
-public class StmContext {
+public class AppRunnerContext {
 
     private static final ThreadLocal<Map<String, Object>> context = new ThreadLocal<>();
 
     public static final String STOP_WATCH = "stop_watch";
     public static final String APPS_META = "apps_meta";
 
-    public static void setAppsMeta(List<StmAppDO> appsMeta) {
+    public static void setAppsMeta(List<AppDO> appsMeta) {
         put(APPS_META, appsMeta);
     }
 
-    public static List<StmAppDO> getAppsMeta() {
-        return (List<StmAppDO>) get(APPS_META, null);
+    public static List<AppDO> getAppsMeta() {
+        return (List<AppDO>) get(APPS_META, null);
     }
 
     public static void clearAppsMeta() {

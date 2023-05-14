@@ -7,8 +7,8 @@ import cn.hutool.core.util.SystemPropsUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpUtil;
 import io.github.apprunner.persistence.ApplicationType;
-import io.github.apprunner.persistence.StmAppDO;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.snack.ONode;
 import org.noear.solon.Solon;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @since 2023/4/30 20:04
  */
 @Slf4j
-public class StmUtils {
+public class AppRunnerUtils {
 
     public static final String API_LIST = "/list";
     public static final String API_LATEST_VERSION = "/latestVersion";
@@ -53,20 +53,20 @@ public class StmUtils {
      * 超时时间，单位毫秒
      */
     public static int timeout() {
-        return Solon.cfg().getInt("stm.api.timeout", 5) * 1000;
+        return Solon.cfg().getInt("apprunner.api.timeout", 5) * 1000;
     }
 
     public static String apiUrl() {
-        return Solon.cfg().get("stm.api.url");
+        return Solon.cfg().get("apprunner.api.url");
     }
 
     /**
-     * stm 应用数据目录，默认为：~/.stm
+     * AppRunner 应用数据目录，默认为：~/.apprunner
      */
     public static String getAppHome() {
-        String appHome = Solon.cfg().get("stm.appHome");
+        String appHome = Solon.cfg().get("apprunner.appHome");
         if (appHome == null) {
-            appHome = SystemPropsUtil.get("user.home") + "/.stm";
+            appHome = SystemPropsUtil.get("user.home") + "/.apprunner";
         }
         return appHome;
     }
@@ -92,9 +92,9 @@ public class StmUtils {
         return getAppHome() + "/tmp/" + System.currentTimeMillis();
     }
 
-    public static String getAppPath(StmAppDO stmAppDO) {
+    public static String getAppPath(AppDO appDO) {
         String appPackage = getAppPackage();
-        return "%s/%s/%s".formatted(appPackage, stmAppDO.getName(), stmAppDO.getVersion());
+        return "%s/%s/%s".formatted(appPackage, appDO.getName(), appDO.getVersion());
     }
 
     public static String getAppRuntimePath(String appType, Long requiredVersion) {
@@ -103,7 +103,7 @@ public class StmUtils {
     }
 
     public static boolean isDebugMode() {
-        String stmDebug = Solon.cfg().get("stm.debug");
+        String stmDebug = Solon.cfg().get("apprunner.debug");
         return Solon.cfg().isDebugMode() || "1".equals(stmDebug);
     }
 
@@ -120,19 +120,24 @@ public class StmUtils {
             File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
             String downloadFileName = downloadFile.getName();
             if (downloadFileName.endsWith(".zip")) {
+                log.info("unzip {} to {}", downloadFile, file);
                 ZipUtil.unzip(downloadFile, file);
-            } else if (downloadFileName.endsWith("tar.gz")){
+            } else if (downloadFileName.endsWith("tar.gz")) {
+                log.info("gzip {} to {}", downloadFile, file);
                 GzipUtil.extractTarGZ(downloadFile, appRuntimePath);
             } else {
-                throw new StmException("Unsupported file type: %s".formatted(downloadFileName));
+                throw new AppRunnerException("Unsupported file type: %s".formatted(downloadFileName));
             }
         }
-        if (isMac()) {
-            String[] list = file.list();
-            if (list != null) {
-                List<String> subFiles = CollUtil.newArrayList(list);
+        String[] list = file.list();
+        if (list != null) {
+            List<String> subFiles = CollUtil.newArrayList(list);
+            if (isMac()) {
                 subFiles.remove(".DS_Store");
                 appRuntimePath = "%s/%s/Contents/Home".formatted(appRuntimePath, subFiles.get(0));
+            } else if (isWindows()) {
+                String subFileName = subFiles.get(subFiles.size() - 1);
+                appRuntimePath = "%s/%s".formatted(appRuntimePath, subFileName);
             }
         }
         if (isDebugMode()) {
@@ -144,33 +149,33 @@ public class StmUtils {
 
     ///////////////////////// API /////////////////////////
 
-    public static List<StmAppDO> apiList(String appName) {
+    public static List<AppDO> apiList(String appName) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", appName);
         ONode oNode = apiRequest(API_LIST, paramMap);
-        return oNode.toObjectList(StmAppDO.class);
+        return oNode.toObjectList(AppDO.class);
     }
 
 
-    public static StmAppDO apiLatestVersion(String appName, String version) {
+    public static AppDO apiLatestVersion(String appName, String version) {
         if (StrUtil.isBlank(appName)) {
-            throw new StmException("appName not null");
+            throw new AppRunnerException("appName not null");
         }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appName", appName);
         paramMap.put("version", version);
         ONode oNode = apiRequest(API_LATEST_VERSION, paramMap);
-        StmAppDO stmAppDO = oNode.toObject(StmAppDO.class);
-        if (stmAppDO == null) {
-            throw new StmException("App not found: %s".formatted(appName));
+        AppDO appDO = oNode.toObject(AppDO.class);
+        if (appDO == null) {
+            throw new AppRunnerException("App not found: %s".formatted(appName));
         }
-        stmAppDO.setVersion(stmAppDO.getAppLatestVersion().getVersion());
-        return stmAppDO;
+        appDO.setVersion(appDO.getAppLatestVersion().getVersion());
+        return appDO;
     }
 
     public static List<String> apiGetAppRuntimeSdkUrls(String appType, Long requiredVersion) {
         if (StrUtil.isBlank(appType)) {
-            throw new StmException("appType not null");
+            throw new AppRunnerException("appType not null");
         }
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appType", appType);
@@ -194,7 +199,7 @@ public class StmUtils {
         ONode oNode = ONode.loadStr(response);
         int status = oNode.get("status").getInt();
         if (status != 0) {
-            throw new StmException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
+            throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
         }
         return oNode.get("data");
     }

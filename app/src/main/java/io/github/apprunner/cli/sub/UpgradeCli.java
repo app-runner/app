@@ -3,12 +3,12 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import io.github.apprunner.cli.StmSubCli;
+import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.StmAppDO;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.DownloadStreamProgress;
-import io.github.apprunner.tools.StmUtils;
+import io.github.apprunner.tools.AppRunnerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -25,7 +25,7 @@ import java.io.File;
 @Slf4j
 @Component
 @CommandLine.Command(name = "upgrade", description = "Upgrade application")
-public class UpgradeCli implements StmSubCli {
+public class UpgradeCli implements AppRunnerSubCli {
 
 
     @CommandLine.Parameters(index = "0", description = "application name")
@@ -40,22 +40,22 @@ public class UpgradeCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        StmAppDO currApp = appsPersistence.getUsed(name);
+        AppDO currApp = appsPersistence.getUsed(name);
         if (currApp == null) {
-            throw new StmException("The application [%s] does not exist".formatted(name));
+            throw new AppRunnerException("The application [%s] does not exist".formatted(name));
         }
-        StmAppDO stmAppDO = StmUtils.apiLatestVersion(name, version);
+        AppDO appDO = AppRunnerUtils.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
-            if (StrUtil.equals(stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {
+            if (StrUtil.equals(appDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {
                 log.info("The application [{}] is already the latest version and does not need to be upgraded", name);
                 return 0;
             }
-            log.info("Latest version of application [{}]: {}, current version: {}", name, stmAppDO.getAppLatestVersion().getVersion(), currApp.getVersion());
+            log.info("Latest version of application [{}]: {}, current version: {}", name, appDO.getAppLatestVersion().getVersion(), currApp.getVersion());
         }
 
-        File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new DownloadStreamProgress());
-        stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
-        appsPersistence.add(stmAppDO);
+        File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
+        appDO.setToolAppPath(downloadFile.getAbsolutePath());
+        appsPersistence.add(appDO);
         log.info("Application [{}] upgraded successfully", name);
         return 0;
     }

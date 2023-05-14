@@ -1,8 +1,8 @@
 package io.github.apprunner.cli.sub;
 
-import io.github.apprunner.tools.StmUtils;
-import io.github.apprunner.cli.StmSubCli;
-import io.github.apprunner.persistence.StmAppDO;
+import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.tools.ConsoleTable;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Component
 @CommandLine.Command(name = "list", description = "List all supported applications")
-public class ListCli implements StmSubCli {
+public class ListCli implements AppRunnerSubCli {
 
     @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed")
     private boolean local;
@@ -32,20 +32,20 @@ public class ListCli implements StmSubCli {
 
         ConsoleTable consoleTable = ConsoleTable.create();
         consoleTable.addHeader("name", "version", "appType", "requiredVersion");
-        List<StmAppDO> localList = appsPersistence.list();
+        List<AppDO> localList = appsPersistence.list();
 
 
-        List<String> existAppIds = localList.stream().map(StmAppDO::getId).toList();
-        for (StmAppDO stmAppDO : localList) {
-            consoleTable.addBody(stmAppDO.getName() + "(local)", stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
+        List<String> existAppIds = localList.stream().map(AppDO::getId).toList();
+        for (AppDO appDO : localList) {
+            consoleTable.addBody(appDO.getName() + "(local)", appDO.getVersion(), appDO.getAppType().getType(), fieldToString(appDO.getRequiredAppTypeVersionNum()));
         }
         if (!local) {
-            List<StmAppDO> stmAppDOS = StmUtils.apiList(null);
-            for (StmAppDO stmAppDO : stmAppDOS) {
-                if (existAppIds.contains(stmAppDO.getId())) {
+            List<AppDO> appDOS = AppRunnerUtils.apiList(null);
+            for (AppDO appDO : appDOS) {
+                if (existAppIds.contains(appDO.getId())) {
                     continue;
                 }
-                consoleTable.addBody(stmAppDO.getName(), stmAppDO.getVersion(), stmAppDO.getAppType().getType(), fieldToString(stmAppDO.getRequiredAppTypeVersionNum()));
+                consoleTable.addBody(appDO.getName(), appDO.getVersion(), appDO.getAppType().getType(), fieldToString(appDO.getRequiredAppTypeVersionNum()));
             }
 
         }

@@ -2,12 +2,12 @@ package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.util.StrUtil;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.StmAppDO;
+import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.tools.AppHome;
 import io.github.apprunner.tools.JavaProcessExecutor;
-import io.github.apprunner.tools.StmUtils;
-import io.github.apprunner.cli.StmSubCli;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -20,7 +20,7 @@ import picocli.CommandLine;
 @Slf4j
 @Component
 @CommandLine.Command(name = "run", description = "Running Application")
-public class RunCli implements StmSubCli {
+public class RunCli implements AppRunnerSubCli {
 
     @Inject
     private AppsPersistence appsPersistence;
@@ -35,23 +35,23 @@ public class RunCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        StmAppDO stmAppDO = appsPersistence.getUsed(name);
-        if (stmAppDO == null) {
-            throw new StmException("The application [%s] does not exist".formatted(name));
+        AppDO appDO = appsPersistence.getUsed(name);
+        if (appDO == null) {
+            throw new AppRunnerException("The application [%s] does not exist".formatted(name));
         }
 
-        switch (stmAppDO.getAppType()) {
+        switch (appDO.getAppType()) {
             case java -> {
-                if (StrUtil.isBlank(stmAppDO.getAppRuntimePath())) {
-                    stmAppDO.setAppRuntimePath(StmUtils.getJavaHome(stmAppDO.getRequiredAppTypeVersionNum()));
+                if (StrUtil.isBlank(appDO.getAppRuntimePath())) {
+                    appDO.setAppRuntimePath(AppRunnerUtils.getJavaHome(appDO.getRequiredAppTypeVersionNum()));
                 }
-                JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(stmAppDO, appParameters);
+                JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(appDO, appParameters);
                 return javaProcessExecutor.run(appHome.getDir());
             }
             case shell -> {
                 log.info("shell exe");
             }
-            default -> throw new StmException("The program running of this type [%s] is currently not supported".formatted(stmAppDO.getAppType()));
+            default -> throw new AppRunnerException("The program running of this type [%s] is currently not supported".formatted(appDO.getAppType()));
         }
         return 0;
     }

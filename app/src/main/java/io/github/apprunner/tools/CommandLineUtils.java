@@ -1,6 +1,6 @@
 package io.github.apprunner.tools;
 
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.plugin.AppRunnerException;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -79,7 +79,7 @@ public class CommandLineUtils {
         }
 
         if ((state == inQuote) || (state == inDoubleQuote)) {
-            throw new StmException("unbalanced quotes in " + toProcess);
+            throw new AppRunnerException("unbalanced quotes in " + toProcess);
         }
 
         String[] args = new String[v.size()];

@@ -4,12 +4,12 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import io.github.apprunner.tools.DownloadStreamProgress;
-import io.github.apprunner.tools.StmUtils;
-import io.github.apprunner.cli.StmSubCli;
+import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.ApplicationType;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.StmAppDO;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -24,7 +24,7 @@ import java.io.File;
 @Slf4j
 @Component
 @CommandLine.Command(name = "install", description = "Installing Applications")
-public class InstallCli implements StmSubCli {
+public class InstallCli implements AppRunnerSubCli {
 
 
     @CommandLine.Parameters(index = "0", description = "application name")
@@ -44,37 +44,37 @@ public class InstallCli implements StmSubCli {
 
     @Override
     public Integer execute() {
-        StmAppDO stmAppDO;
+        AppDO appDO;
         if (path != null) {
-            stmAppDO = localInstall();
+            appDO = localInstall();
         } else {
             appsPersistence.existAndThrow(name);
-            stmAppDO = StmUtils.apiLatestVersion(name, null);
-            File downloadFile = HttpUtil.downloadFileFromUrl(stmAppDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(StmUtils.getAppPath(stmAppDO)), new DownloadStreamProgress());
-            stmAppDO.setToolAppPath(downloadFile.getAbsolutePath());
+            appDO = AppRunnerUtils.apiLatestVersion(name, null);
+            File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
+            appDO.setToolAppPath(downloadFile.getAbsolutePath());
         }
-        appsPersistence.add(stmAppDO);
+        appsPersistence.add(appDO);
         log.info("Application [{}] installed successfully", name);
         return 0;
     }
 
-    private StmAppDO localInstall() {
+    private AppDO localInstall() {
         if (requiredVersion == null) {
-            throw new StmException("Please specify the minimum version that the application runs, for example, Java applications need to specify the Java version, 17");
+            throw new AppRunnerException("Please specify the minimum version that the application runs, for example, Java applications need to specify the Java version, 17");
         }
-        StmAppDO stmAppDO = new StmAppDO();
-        stmAppDO.setName(name);
-        stmAppDO.setAppType(getAppType(path));
-        if (ApplicationType.java.equals(stmAppDO.getAppType())) {
-            stmAppDO.setJava(new StmAppDO.JavaDO());
-            stmAppDO.setRequiredAppTypeVersionNum(requiredVersion);
+        AppDO appDO = new AppDO();
+        appDO.setName(name);
+        appDO.setAppType(getAppType(path));
+        if (ApplicationType.java.equals(appDO.getAppType())) {
+            appDO.setJava(new AppDO.JavaDO());
+            appDO.setRequiredAppTypeVersionNum(requiredVersion);
         }
-        stmAppDO.setVersion(version);
-        String installedAppPath = StmUtils.getAppPath(stmAppDO) + "/" + path.getName();
+        appDO.setVersion(version);
+        String installedAppPath = AppRunnerUtils.getAppPath(appDO) + "/" + path.getName();
         File copy = FileUtil.copy(path, new File(installedAppPath), true);
         log.info("copy application [{}] to: {}", name, copy.getAbsolutePath());
-        stmAppDO.setToolAppPath(copy.getAbsolutePath());
-        return stmAppDO;
+        appDO.setToolAppPath(copy.getAbsolutePath());
+        return appDO;
     }
 
     private ApplicationType getAppType(File file) {
@@ -87,6 +87,6 @@ public class InstallCli implements StmSubCli {
                 }
             }
         }
-        throw new StmException("unsupported file suffix");
+        throw new AppRunnerException("unsupported file suffix");
     }
 }

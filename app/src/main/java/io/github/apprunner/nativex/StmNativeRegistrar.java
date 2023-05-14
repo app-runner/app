@@ -1,6 +1,6 @@
 package io.github.apprunner.nativex;
 
-import io.github.apprunner.persistence.StmAppDO;
+import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.persistence.StmAppVersionDO;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -18,7 +18,7 @@ public class StmNativeRegistrar implements RuntimeNativeRegistrar {
 
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
-        nativeMetadata.registerSerialization(StmAppDO.class);
+        nativeMetadata.registerSerialization(AppDO.class);
         nativeMetadata.registerSerialization(StmAppVersionDO.class);
 
         nativeMetadata.registerArg("--enable-http");

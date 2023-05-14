@@ -18,8 +18,8 @@ package io.github.apprunner.tools;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import io.github.apprunner.persistence.StmAppDO;
-import io.github.apprunner.plugin.StmException;
+import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public class JavaProcessExecutor {
 
     private Consumer<RunProcess> runProcessCustomizer;
 
-    private StmAppDO javaApp;
+    private AppDO javaApp;
 
     private String[] appParameters;
 
@@ -59,9 +59,9 @@ public class JavaProcessExecutor {
         this.runProcessCustomizer = runProcessCustomizer;
     }
 
-    public JavaProcessExecutor(StmAppDO stmAppDO, String[] appParameters) {
-        this.javaApp = stmAppDO;
-        this.javaHome = stmAppDO.getAppRuntimePath();
+    public JavaProcessExecutor(AppDO appDO, String[] appParameters) {
+        this.javaApp = appDO;
+        this.javaHome = appDO.getAppRuntimePath();
         this.appParameters = appParameters;
     }
 
@@ -96,7 +96,7 @@ public class JavaProcessExecutor {
                 environmentVariables.put(k.toString(), v.toString());
             }
         });
-        if (StmUtils.isDebugMode()) {
+        if (AppRunnerUtils.isDebugMode()) {
             log.info("start run java app, work dir=%s, args=%s".formatted(workingDirectory, args));
         }
         return this.run(workingDirectory, args, environmentVariables);
@@ -110,11 +110,11 @@ public class JavaProcessExecutor {
         try {
             int exitCode = runProcess.run(true, args, environmentVariables);
             if (!hasTerminatedSuccessfully(exitCode)) {
-                throw new StmException("Process terminated with exit code: " + exitCode);
+                throw new AppRunnerException("Process terminated with exit code: " + exitCode);
             }
             return exitCode;
         } catch (IOException ex) {
-            throw new StmException("Process execution failed", ex);
+            throw new AppRunnerException("Process execution failed", ex);
         }
     }
 
@@ -124,7 +124,7 @@ public class JavaProcessExecutor {
             runProcess.run(false, args, environmentVariables);
             return runProcess;
         } catch (IOException ex) {
-            throw new StmException("Process execution failed", ex);
+            throw new AppRunnerException("Process execution failed", ex);
         }
     }
 
