@@ -23,7 +23,7 @@ jobs:
       - name: GitHub Action for GraalVM JDK 17
         uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.1'
+          version: '22.3.2'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3.0.0
         with:
           name: app-${{ matrix.os }}.zip
-          path: app-${{ matrix.os }}.zip
+          path: app/target/app-${{ matrix.os }}.zip
       # GitHub 上创建 release
       - name: Release
         uses: softprops/action-gh-release@v1
