@@ -1,6 +1,6 @@
 package io.github.apprunner.cli.sub;
 
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
@@ -40,7 +40,7 @@ public class ListCli implements AppRunnerSubCli {
             consoleTable.addBody(appDO.getName() + "(local)", appDO.getVersion(), appDO.getAppType().getType(), fieldToString(appDO.getRequiredAppTypeVersionNum()));
         }
         if (!local) {
-            List<AppDO> appDOS = AppRunnerUtils.apiList(null);
+            List<AppDO> appDOS = Util.apiList(null);
             for (AppDO appDO : appDOS) {
                 if (existAppIds.contains(appDO.getId())) {
                     continue;

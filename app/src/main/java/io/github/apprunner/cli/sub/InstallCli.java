@@ -4,7 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import io.github.apprunner.tools.DownloadStreamProgress;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.ApplicationType;
 import io.github.apprunner.persistence.AppsPersistence;
@@ -49,8 +49,8 @@ public class InstallCli implements AppRunnerSubCli {
             appDO = localInstall();
         } else {
             appsPersistence.existAndThrow(name);
-            appDO = AppRunnerUtils.apiLatestVersion(name, null);
-            File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
+            appDO = Util.apiLatestVersion(name, null);
+            File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
             appDO.setToolAppPath(downloadFile.getAbsolutePath());
         }
         appsPersistence.add(appDO);
@@ -70,7 +70,7 @@ public class InstallCli implements AppRunnerSubCli {
             appDO.setRequiredAppTypeVersionNum(requiredVersion);
         }
         appDO.setVersion(version);
-        String installedAppPath = AppRunnerUtils.getAppPath(appDO) + "/" + path.getName();
+        String installedAppPath = Util.getAppPath(appDO) + "/" + path.getName();
         File copy = FileUtil.copy(path, new File(installedAppPath), true);
         log.info("copy application [{}] to: {}", name, copy.getAbsolutePath());
         appDO.setToolAppPath(copy.getAbsolutePath());

@@ -5,7 +5,7 @@ import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.tools.AppHome;
 import io.github.apprunner.tools.JavaProcessExecutor;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class RunCli implements AppRunnerSubCli {
         switch (appDO.getAppType()) {
             case java -> {
                 if (StrUtil.isBlank(appDO.getAppRuntimePath())) {
-                    appDO.setAppRuntimePath(AppRunnerUtils.getJavaHome(appDO.getRequiredAppTypeVersionNum()));
+                    appDO.setAppRuntimePath(Util.getJavaHome(appDO.getRequiredAppTypeVersionNum()));
                 }
                 JavaProcessExecutor javaProcessExecutor = new JavaProcessExecutor(appDO, appParameters);
                 return javaProcessExecutor.run(appHome.findDefaultHomeDir());

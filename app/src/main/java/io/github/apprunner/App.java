@@ -7,7 +7,7 @@ import cn.hutool.core.date.StopWatch;
 import io.github.apprunner.cli.AppRunnerCli;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.tools.AppRunnerContext;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.tools.StopWatchUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
@@ -35,6 +35,8 @@ public class App {
         Solon.start(App.class, args);
         stopWatch.stop();
 
+        Util.setDebugMode(Solon.cfg().isDebugMode());
+
         // apprunner cli
         stopWatch.start("AppRunnerCli init");
         AppRunnerCli appRunnerCli = Solon.context().getBean(AppRunnerCli.class);
@@ -45,7 +47,7 @@ public class App {
         }
         stopWatch.stop();
         int execute = commandLine.execute(args);
-        if (AppRunnerUtils.isDebugMode()) {
+        if (Util.isDebugMode()) {
             log.info("time：{} ms, {}", stopWatch.getTotalTimeMillis(), StopWatchUtil.prettyPrint(stopWatch));
         }
         if (!NativeDetector.isAotRuntime()) {

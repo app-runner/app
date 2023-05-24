@@ -96,7 +96,7 @@ public class JavaProcessExecutor {
                 environmentVariables.put(k.toString(), v.toString());
             }
         });
-        if (AppRunnerUtils.isDebugMode()) {
+        if (Util.isDebugMode()) {
             log.info("start run java app, work dir=%s, args=%s".formatted(workingDirectory, args));
         }
         return this.run(workingDirectory, args, environmentVariables);

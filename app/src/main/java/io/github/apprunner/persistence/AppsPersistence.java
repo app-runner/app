@@ -4,7 +4,7 @@ import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import io.github.apprunner.tools.AppRunnerContext;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.plugin.AppRunnerException;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
@@ -32,7 +32,7 @@ public class AppsPersistence implements LifecycleBean {
 
     @Override
     public void start() throws Throwable {
-        appsJson = new File(AppRunnerUtils.getAppHome(), "/metadata/apps.json");
+        appsJson = new File(Util.getAppHome(), "/metadata/apps.json");
     }
 
     public int add(AppDO plugin) {

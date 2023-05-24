@@ -1,5 +1,6 @@
 package io.github.apprunner.cli;
 
+import io.github.apprunner.tools.Util;
 import org.noear.solon.annotation.Component;
 import picocli.CommandLine;
 
@@ -13,6 +14,12 @@ public class AppRunnerCli implements Runnable {
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
+
+    @CommandLine.Option(names = {
+        "--debug" }, description = "app will be verbose on what it does.", scope = CommandLine.ScopeType.INHERIT)
+    void setDebug(boolean debug) {
+        Util.setDebugMode(debug);
+    }
 
     @Override
     public void run() {

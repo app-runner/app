@@ -2,7 +2,7 @@ package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import picocli.AutoComplete;
@@ -29,7 +29,7 @@ public class CompletionCli implements AppRunnerSubCli {
         String script = AutoComplete.bash(
             spec.parent().name(),
             spec.parent().commandLine());
-        String filePath = AppRunnerUtils.getAppHome() + File.separator + spec.parent().name() + "_completion";
+        String filePath = Util.getAppHome() + File.separator + spec.parent().name() + "_completion";
 
         FileUtil.writeString(script, filePath, Charset.defaultCharset());
         log.info("Generate completion script successfully, path: {}", filePath);

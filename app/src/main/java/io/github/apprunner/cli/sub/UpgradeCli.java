@@ -8,7 +8,7 @@ import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.DownloadStreamProgress;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -44,7 +44,7 @@ public class UpgradeCli implements AppRunnerSubCli {
         if (currApp == null) {
             throw new AppRunnerException("The application [%s] does not exist".formatted(name));
         }
-        AppDO appDO = AppRunnerUtils.apiLatestVersion(name, version);
+        AppDO appDO = Util.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
             if (StrUtil.equals(appDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {
                 log.info("The application [{}] is already the latest version and does not need to be upgraded", name);
@@ -55,7 +55,7 @@ public class UpgradeCli implements AppRunnerSubCli {
 
         String url = StrUtil.isNotBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGithubDownloadUrl() : appDO.getAppLatestVersion().getGiteeDownloadUrl();
 
-        File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(AppRunnerUtils.getAppPath(appDO)), new DownloadStreamProgress());
+        File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
         appDO.setToolAppPath(downloadFile.getAbsolutePath());
         appsPersistence.add(appDO);
         log.info("Application [{}] upgraded successfully", name);

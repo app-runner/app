@@ -1,7 +1,7 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
-import io.github.apprunner.tools.AppRunnerUtils;
+import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
@@ -32,7 +32,7 @@ public class UninstallCli implements AppRunnerSubCli {
         if (appDO == null) {
             throw new AppRunnerException("The application [%s] does not exist".formatted(name));
         }
-        String appPath = AppRunnerUtils.getAppPath(appDO);
+        String appPath = Util.getAppPath(appDO);
         appsPersistence.remove(name);
         FileUtil.del(appPath);
         log.info("delete file: {}", appPath);

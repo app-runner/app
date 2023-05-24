@@ -23,7 +23,7 @@ import java.util.Map;
  * @since 2023/4/30 20:04
  */
 @Slf4j
-public class AppRunnerUtils {
+public class Util {
 
     public static final String API_LIST = "/list";
     public static final String API_LATEST_VERSION = "/latestVersion";
@@ -32,6 +32,8 @@ public class AppRunnerUtils {
     public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
 
     public static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+
+    private static boolean isDebugMode = false;
 
     public static boolean isWindows() {
         return IS_WINDOWS;
@@ -102,9 +104,12 @@ public class AppRunnerUtils {
         return "%s/%s/%s".formatted(appRuntimeHome, appType.toLowerCase(), requiredVersion);
     }
 
+    public static void setDebugMode(boolean debugMode){
+        Util.isDebugMode = debugMode;
+    }
+
     public static boolean isDebugMode() {
-        String stmDebug = Solon.cfg().get("apprunner.debug");
-        return Solon.cfg().isDebugMode() || "1".equals(stmDebug);
+        return Util.isDebugMode;
     }
 
     public static String getJavaHome(Long requiredJreVersion) {
