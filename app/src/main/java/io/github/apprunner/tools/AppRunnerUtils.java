@@ -108,6 +108,20 @@ public class AppRunnerUtils {
     }
 
     public static String getJavaHome(Long requiredJreVersion) {
+        String javaHome = Solon.cfg().get("apprunner.javaHome");
+        if (StrUtil.isBlank(javaHome)) {
+            javaHome = System.getProperty("java.home");
+        }
+        if (StrUtil.isBlank(javaHome)) {
+            javaHome = System.getenv("JAVA_HOME");
+        }
+        if (StrUtil.isBlank(javaHome)) {
+            javaHome = useDownloadJavaHome(requiredJreVersion);
+        }
+        return javaHome;
+    }
+
+    private static String useDownloadJavaHome(Long requiredJreVersion) {
         String appRuntimePath = getAppRuntimePath(ApplicationType.java.getType(), requiredJreVersion);
         File file = new File(appRuntimePath);
         // 目录不存在，下载对应版本的 jre

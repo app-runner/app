@@ -14,7 +14,7 @@ import org.noear.solon.core.AopContext;
  */
 @Slf4j
 @Component
-public class StmNativeRegistrar implements RuntimeNativeRegistrar {
+public class AppRunnerNativeRegistrar implements RuntimeNativeRegistrar {
 
     @Override
     public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
