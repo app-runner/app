@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import cn.hutool.core.date.StopWatch;
 import io.github.apprunner.cli.AppRunnerCli;
 import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.picocli.PicocliSolonFactory;
 import io.github.apprunner.tools.AppRunnerContext;
 import io.github.apprunner.tools.StopWatchUtil;
 import io.github.apprunner.tools.Util;
@@ -38,7 +39,7 @@ public class App {
         // apprunner cli
         stopWatch.start("AppRunnerCli init");
         AppRunnerCli appRunnerCli = Solon.context().getBean(AppRunnerCli.class);
-        CommandLine commandLine = new CommandLine(appRunnerCli);
+        CommandLine commandLine = new CommandLine(appRunnerCli, new PicocliSolonFactory());
         List<AppRunnerSubCli> appRunnerSubClis = Solon.context().getBeansOfType(AppRunnerSubCli.class);
         for (AppRunnerSubCli appRunnerSubCli : appRunnerSubClis) {
             commandLine.addSubcommand(appRunnerSubCli.getCommandLine());

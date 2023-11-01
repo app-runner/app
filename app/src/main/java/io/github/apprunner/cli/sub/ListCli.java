@@ -21,7 +21,7 @@ import java.util.List;
 @CommandLine.Command(name = "list", description = "List all supported applications")
 public class ListCli implements AppRunnerSubCli {
 
-    @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed")
+    @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed", defaultValue = "false")
     private boolean local;
 
     @Inject

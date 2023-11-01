@@ -1,6 +1,8 @@
 package io.github.apprunner.tools;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
@@ -61,13 +63,17 @@ public class ApiUtils {
         if (Util.isDebugMode()) {
             log.info("{} request: {}", url, paramMap);
         }
-        String response = HttpUtil.get(url, paramMap, Util.timeout());
-        if (Util.isDebugMode()) {
-            log.info("{} response: {}", url, response);
+        HttpResponse httpResponse = HttpRequest.get(url).form(paramMap).timeout(Util.timeout()).execute();
+        String responseBody = httpResponse.body();
+        if (httpResponse.getStatus() != 200) {
+            throw new AppRunnerException("request was failed(%s)：%s".formatted(httpResponse.getStatus(), responseBody));
         }
-        ONode oNode = ONode.loadStr(response);
+        if (Util.isDebugMode()) {
+            log.info("{} response: {}", url, responseBody);
+        }
+        ONode oNode = ONode.loadStr(responseBody);
         int status = oNode.get("status").getInt();
-        if (status != 0) {
+        if (status != 200) {
             throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
         }
         return oNode.get("data");
