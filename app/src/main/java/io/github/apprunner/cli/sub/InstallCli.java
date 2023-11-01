@@ -3,12 +3,13 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.tools.DownloadStreamProgress;
 import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.ApplicationType;
+import io.github.apprunner.persistence.entity.ApplicationType;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -49,9 +50,9 @@ public class InstallCli implements AppRunnerSubCli {
             appDO = localInstall();
         } else {
             appsPersistence.existAndThrow(name);
-            appDO = Util.apiLatestVersion(name, null);
+            appDO = ApiUtils.apiLatestVersion(name, null);
             File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
-            appDO.setToolAppPath(downloadFile.getAbsolutePath());
+            appDO.setAppPath(downloadFile.getAbsolutePath());
         }
         appsPersistence.add(appDO);
         log.info("Application [{}] installed successfully", name);
@@ -73,7 +74,7 @@ public class InstallCli implements AppRunnerSubCli {
         String installedAppPath = Util.getAppPath(appDO) + "/" + path.getName();
         File copy = FileUtil.copy(path, new File(installedAppPath), true);
         log.info("copy application [{}] to: {}", name, copy.getAbsolutePath());
-        appDO.setToolAppPath(copy.getAbsolutePath());
+        appDO.setAppPath(copy.getAbsolutePath());
         return appDO;
     }
 

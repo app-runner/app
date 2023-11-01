@@ -3,7 +3,7 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;

@@ -1,12 +1,12 @@
 package io.github.apprunner.nativex;
 
-import io.github.apprunner.persistence.AppDO;
-import io.github.apprunner.persistence.StmAppVersionDO;
+import io.github.apprunner.persistence.entity.AppDO;
+import io.github.apprunner.persistence.entity.StmAppVersionDO;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
-import org.noear.solon.core.AopContext;
+import org.noear.solon.core.AppContext;
 
 /**
  * @author songyinyin
@@ -17,7 +17,7 @@ import org.noear.solon.core.AopContext;
 public class AppRunnerNativeRegistrar implements RuntimeNativeRegistrar {
 
     @Override
-    public void register(AopContext context, RuntimeNativeMetadata nativeMetadata) {
+    public void register(AppContext context, RuntimeNativeMetadata nativeMetadata) {
         nativeMetadata.registerSerialization(AppDO.class);
         nativeMetadata.registerSerialization(StmAppVersionDO.class);
 

@@ -7,14 +7,12 @@ import cn.hutool.core.date.StopWatch;
 import io.github.apprunner.cli.AppRunnerCli;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.tools.AppRunnerContext;
-import io.github.apprunner.tools.Util;
 import io.github.apprunner.tools.StopWatchUtil;
+import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
 import org.noear.solon.core.runtime.NativeDetector;
-import org.noear.solon.core.util.LogUtil;
-import org.noear.solon.logging.utils.LogUtilToSlf4j;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
@@ -61,7 +59,6 @@ public class App {
                 return;
             }
         }
-        LogUtil.globalSet(new LogUtilToSlf4j());
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger logger = loggerContext.getLogger("org.noear.solon.Solon");
         logger.setLevel(Level.valueOf("warn"));

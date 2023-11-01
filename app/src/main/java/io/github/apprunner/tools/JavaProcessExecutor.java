@@ -18,7 +18,7 @@ package io.github.apprunner.tools;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,7 +79,7 @@ public class JavaProcessExecutor {
         }
 
         args.add("-jar");
-        args.add(javaApp.getToolAppPath());
+        args.add(javaApp.getAppPath());
 
         if (javaApp.getJava() != null && StrUtil.isNotBlank(javaApp.getJava().getAppArguments())) {
             String[] appArgs = CommandLineUtils.parseArgs(javaApp.getJava().getAppArguments());

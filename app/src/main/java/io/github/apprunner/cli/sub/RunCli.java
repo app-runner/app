@@ -1,13 +1,14 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.AppHome;
 import io.github.apprunner.tools.JavaProcessExecutor;
 import io.github.apprunner.tools.Util;
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -27,7 +28,7 @@ public class RunCli implements AppRunnerSubCli {
 
     private final AppHome appHome = new AppHome();
 
-    @CommandLine.Parameters(index = "0", description = "application name")
+    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
     private String name;
 
     @CommandLine.Parameters(index = "1..*", description = "run parameters")
@@ -51,7 +52,8 @@ public class RunCli implements AppRunnerSubCli {
             case shell -> {
                 log.info("shell exe");
             }
-            default -> throw new AppRunnerException("The program running of this type [%s] is currently not supported".formatted(appDO.getAppType()));
+            default ->
+                throw new AppRunnerException("The program running of this type [%s] is currently not supported".formatted(appDO.getAppType()));
         }
         return 0;
     }

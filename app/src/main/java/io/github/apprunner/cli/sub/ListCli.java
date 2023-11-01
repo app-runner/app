@@ -1,8 +1,8 @@
 package io.github.apprunner.cli.sub;
 
-import io.github.apprunner.tools.Util;
+import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.tools.ConsoleTable;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class ListCli implements AppRunnerSubCli {
 
         ConsoleTable consoleTable = ConsoleTable.create();
         consoleTable.addHeader("name", "version", "appType", "requiredVersion");
-        List<AppDO> localList = appsPersistence.list();
+        List<AppDO> localList = appsPersistence.listAll();
 
 
         List<String> existAppIds = localList.stream().map(AppDO::getId).toList();
@@ -40,7 +40,7 @@ public class ListCli implements AppRunnerSubCli {
             consoleTable.addBody(appDO.getName() + "(local)", appDO.getVersion(), appDO.getAppType().getType(), fieldToString(appDO.getRequiredAppTypeVersionNum()));
         }
         if (!local) {
-            List<AppDO> appDOS = Util.apiList(null);
+            List<AppDO> appDOS = ApiUtils.apiList(null);
             for (AppDO appDO : appDOS) {
                 if (existAppIds.contains(appDO.getId())) {
                     continue;

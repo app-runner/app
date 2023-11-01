@@ -1,4 +1,4 @@
-package io.github.apprunner.persistence;
+package io.github.apprunner.persistence.entity;
 
 import lombok.Data;
 
@@ -38,10 +38,18 @@ public class AppDO implements Serializable {
 
     private JavaDO java;
 
-    private String toolAppPath;
+    /**
+     * 是否为当前使用的版本
+     */
+    private boolean isUsed;
 
     /**
-     * 应用运行时以来的环境，比如 jre 的路径，如果不设置，则使用stm配置的对应版本的jre
+     * 应用的路径，形如：~/.apprunner/app/{appName}/{version}
+     */
+    private String appPath;
+
+    /**
+     * 应用运行时依赖的环境，比如 jre 的路径，如果不设置，则使用app配置的对应版本的jre
      */
     private String appRuntimePath;
 

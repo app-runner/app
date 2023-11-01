@@ -7,9 +7,7 @@ mvn clean install -DskipTests -P tencent -pl common -am --no-transfer-progress
 
 cd app || exit
 
-mvn clean package -P tencent -DskipTests --no-transfer-progress
-
-java -jar /Users/songyinyin/study/app/app/target/app.jar completion
+mvn clean native:compile -DskipTests -P tencent,native --no-transfer-progress
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`

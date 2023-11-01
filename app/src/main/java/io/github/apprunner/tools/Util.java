@@ -6,17 +6,14 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.SystemPropsUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpUtil;
-import io.github.apprunner.persistence.ApplicationType;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
+import io.github.apprunner.persistence.entity.ApplicationType;
 import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
-import org.noear.snack.ONode;
 import org.noear.solon.Solon;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author songyinyin
@@ -94,6 +91,9 @@ public class Util {
         return getAppHome() + "/tmp/" + System.currentTimeMillis();
     }
 
+    /**
+     * 应用路径，形如：~/.apprunner/app/{appName}/{version}
+     */
     public static String getAppPath(AppDO appDO) {
         String appPackage = getAppPackage();
         return "%s/%s/%s".formatted(appPackage, appDO.getName(), appDO.getVersion());
@@ -104,7 +104,7 @@ public class Util {
         return "%s/%s/%s".formatted(appRuntimeHome, appType.toLowerCase(), requiredVersion);
     }
 
-    public static void setDebugMode(boolean debugMode){
+    public static void setDebugMode(boolean debugMode) {
         Util.isDebugMode = debugMode;
     }
 
@@ -133,7 +133,7 @@ public class Util {
         if (!file.exists()) {
             FileUtil.mkdir(file);
 
-            List<String> urls = apiGetAppRuntimeSdkUrls(ApplicationType.java.getType(), requiredJreVersion);
+            List<String> urls = ApiUtils.apiGetAppRuntimeSdkUrls(ApplicationType.java.getType(), requiredJreVersion);
             String url = urls.get(0).split(",")[0];
 
             File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
@@ -165,61 +165,4 @@ public class Util {
         return appRuntimePath;
     }
 
-
-    ///////////////////////// API /////////////////////////
-
-    public static List<AppDO> apiList(String appName) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", appName);
-        ONode oNode = apiRequest(API_LIST, paramMap);
-        return oNode.toObjectList(AppDO.class);
-    }
-
-
-    public static AppDO apiLatestVersion(String appName, String version) {
-        if (StrUtil.isBlank(appName)) {
-            throw new AppRunnerException("appName not null");
-        }
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("appName", appName);
-        paramMap.put("version", version);
-        ONode oNode = apiRequest(API_LATEST_VERSION, paramMap);
-        AppDO appDO = oNode.toObject(AppDO.class);
-        if (appDO == null) {
-            throw new AppRunnerException("App not found: %s".formatted(appName));
-        }
-        appDO.setVersion(appDO.getAppLatestVersion().getVersion());
-        return appDO;
-    }
-
-    public static List<String> apiGetAppRuntimeSdkUrls(String appType, Long requiredVersion) {
-        if (StrUtil.isBlank(appType)) {
-            throw new AppRunnerException("appType not null");
-        }
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("appType", appType);
-        paramMap.put("requiredAppTypeVersionNum", requiredVersion);
-        paramMap.put("osName", getOsName());
-        paramMap.put("osArch", getOsArch());
-        ONode oNode = apiRequest(API_GET_APP_RUNTIME_SDK_URLS, paramMap);
-        return oNode.toObjectList(String.class);
-    }
-
-    private static ONode apiRequest(String path, Map<String, Object> paramMap) {
-        String apiUrl = apiUrl();
-        String url = apiUrl + path;
-        if (isDebugMode()) {
-            log.info("{} request: {}", url, paramMap);
-        }
-        String response = HttpUtil.get(url, paramMap, timeout());
-        if (isDebugMode()) {
-            log.info("{} response: {}", url, response);
-        }
-        ONode oNode = ONode.loadStr(response);
-        int status = oNode.get("status").getInt();
-        if (status != 0) {
-            throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
-        }
-        return oNode.get("data");
-    }
 }

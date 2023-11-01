@@ -1,4 +1,4 @@
-package io.github.apprunner.persistence;
+package io.github.apprunner.persistence.entity;
 
 import lombok.Data;
 

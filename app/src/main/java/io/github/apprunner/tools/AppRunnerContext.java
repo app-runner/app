@@ -1,7 +1,7 @@
 package io.github.apprunner.tools;
 
 import cn.hutool.core.date.StopWatch;
-import io.github.apprunner.persistence.AppDO;
+import io.github.apprunner.persistence.entity.AppDO;
 
 import java.util.HashMap;
 import java.util.List;
