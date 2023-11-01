@@ -9,7 +9,8 @@ cd app || exit
 
 mvn clean package -P tencent -DskipTests --no-transfer-progress
 
-java -jar /Users/songyinyin/study/app/app/target/app.jar completion
+echo "开始生成补全脚本 ..."
+java -jar target/app.jar completion
 
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`
