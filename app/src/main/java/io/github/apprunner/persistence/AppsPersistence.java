@@ -65,10 +65,10 @@ public class AppsPersistence implements LifecycleBean {
      * 获取当前使用的应用版本
      */
     public AppDO getUsed(String name) {
-        List<AppDO> plugins = listAll();
+        List<AppDO> plugins = listCurrent();
         return plugins.stream()
             .filter(plugin -> plugin.getName().equals(name))
-            .max(Comparator.comparing(AppDO::getVersion, VersionComparator.INSTANCE)).orElse(null);
+            .findFirst().orElseThrow(() -> new AppRunnerException(String.format("Application [%s] does not exist", name)));
     }
 
     /**

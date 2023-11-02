@@ -29,7 +29,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
         <picocli.version>4.7.5</picocli.version>
-        <jline.version>3.23.0</jline.version>
+        <jline.version>3.24.1</jline.version>
 
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <java.version>17</java.version>

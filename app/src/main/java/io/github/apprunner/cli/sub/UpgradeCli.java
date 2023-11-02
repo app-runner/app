@@ -6,7 +6,6 @@ import cn.hutool.http.HttpUtil;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.persistence.AppsPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
-import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.tools.DownloadStreamProgress;
 import io.github.apprunner.tools.Util;
@@ -42,9 +41,7 @@ public class UpgradeCli implements AppRunnerSubCli {
     @Override
     public Integer execute() {
         AppDO currApp = appsPersistence.getUsed(name);
-        if (currApp == null) {
-            throw new AppRunnerException("The application [%s] does not exist".formatted(name));
-        }
+
         AppDO appDO = ApiUtils.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
             if (StrUtil.equals(appDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {

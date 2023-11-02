@@ -3,8 +3,8 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.util.StrUtil;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.cli.support.AppNameCandidates;
-import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
+import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.AppHome;
 import io.github.apprunner.tools.JavaProcessExecutor;
@@ -37,9 +37,6 @@ public class RunCli implements AppRunnerSubCli {
     @Override
     public Integer execute() {
         AppDO appDO = appsPersistence.getUsed(name);
-        if (appDO == null) {
-            throw new AppRunnerException("The application [%s] does not exist".formatted(name));
-        }
 
         switch (appDO.getAppType()) {
             case java -> {

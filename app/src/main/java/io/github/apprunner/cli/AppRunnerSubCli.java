@@ -21,16 +21,17 @@ public interface AppRunnerSubCli extends Callable<Integer> {
             Integer execute = execute();
             stopWatch.stop();
             return execute;
-        } catch (AppRunnerException e) {
-            LogUtil.global().error(e.getMessage());
-            if (e.getException() != null) {
-                e.printStackTrace();
+        } catch (Exception e) {
+            if (e instanceof AppRunnerException ae) {
+                LogUtil.global().error(ae.getMessage(), ae.getException());
+                return ae.getExitCode();
             }
-            return e.getExitCode();
+            LogUtil.global().error(e.getMessage(), e);
+            return -1;
         }
     }
 
-    Integer execute();
+    Integer execute() throws Exception;
 
     default CommandLine getCommandLine() {
         CommandLine commandLine = new CommandLine(this);

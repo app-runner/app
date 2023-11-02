@@ -1,11 +1,10 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
-import io.github.apprunner.tools.Util;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.plugin.AppRunnerException;
+import io.github.apprunner.persistence.entity.AppDO;
+import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -29,9 +28,7 @@ public class UninstallCli implements AppRunnerSubCli {
     @Override
     public Integer execute() {
         AppDO appDO = appsPersistence.getUsed(name);
-        if (appDO == null) {
-            throw new AppRunnerException("The application [%s] does not exist".formatted(name));
-        }
+
         String appPath = Util.getAppPath(appDO);
         appsPersistence.remove(name);
         FileUtil.del(appPath);

@@ -73,7 +73,7 @@ public class ApiUtils {
         }
         ONode oNode = ONode.loadStr(responseBody);
         int status = oNode.get("status").getInt();
-        if (status != 200) {
+        if (status != 0) {
             throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
         }
         return oNode.get("data");

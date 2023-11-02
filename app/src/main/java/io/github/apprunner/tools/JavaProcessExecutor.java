@@ -97,7 +97,7 @@ public class JavaProcessExecutor {
             }
         });
         if (Util.isDebugMode()) {
-            log.info("start run java app, work dir=%s, args=%s".formatted(workingDirectory, args));
+            log.info("start run java app, workdir=%s, JAVA_HOME=%s, args=%s".formatted(workingDirectory, getJavaExecutable(), args));
         }
         return this.run(workingDirectory, args, environmentVariables);
     }
