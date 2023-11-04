@@ -30,12 +30,12 @@ public class AppRunnerContext {
         clear(APPS_META);
     }
 
-    public static void setStopWatch(StopWatch stopWatch) {
+    public static void setStopWatch(ReentrantStopWatch stopWatch) {
         put(STOP_WATCH, stopWatch);
     }
 
-    public static StopWatch getStopWatch() {
-        return (StopWatch) get(STOP_WATCH, new StopWatch("default"));
+    public static ReentrantStopWatch getStopWatch() {
+        return (ReentrantStopWatch) get(STOP_WATCH, new StopWatch("default"));
     }
 
     /**

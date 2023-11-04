@@ -1,8 +1,8 @@
 package io.github.apprunner.cli;
 
-import cn.hutool.core.date.StopWatch;
-import io.github.apprunner.tools.AppRunnerContext;
 import io.github.apprunner.plugin.AppRunnerException;
+import io.github.apprunner.tools.AppRunnerContext;
+import io.github.apprunner.tools.ReentrantStopWatch;
 import org.noear.solon.core.util.LogUtil;
 import picocli.CommandLine;
 
@@ -16,7 +16,7 @@ public interface AppRunnerSubCli extends Callable<Integer> {
 
     default Integer call() {
         try {
-            StopWatch stopWatch = AppRunnerContext.getStopWatch();
+            ReentrantStopWatch stopWatch = AppRunnerContext.getStopWatch();
             stopWatch.start(this.getClass().getSimpleName());
             Integer execute = execute();
             stopWatch.stop();

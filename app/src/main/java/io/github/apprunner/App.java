@@ -3,12 +3,11 @@ package io.github.apprunner;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import cn.hutool.core.date.StopWatch;
 import io.github.apprunner.cli.AppRunnerCli;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.picocli.PicocliSolonFactory;
 import io.github.apprunner.tools.AppRunnerContext;
-import io.github.apprunner.tools.StopWatchUtil;
+import io.github.apprunner.tools.ReentrantStopWatch;
 import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
@@ -24,7 +23,7 @@ import java.util.List;
 public class App {
 
     public static void main(String[] args) {
-        StopWatch stopWatch = new StopWatch("AppRunner");
+        ReentrantStopWatch stopWatch = new ReentrantStopWatch("AppRunner");
         AppRunnerContext.setStopWatch(stopWatch);
         stopWatch.start("AppRunner start");
         // 设置日志级别
@@ -47,7 +46,7 @@ public class App {
         stopWatch.stop();
         int execute = commandLine.execute(args);
         if (Util.isDebugMode()) {
-            log.info("time：{} ms, {}", stopWatch.getTotalTimeMillis(), StopWatchUtil.prettyPrint(stopWatch));
+            log.info("time：{} ms, {}", stopWatch.getTotalTimeMillis(), stopWatch.prettyPrint());
         }
         if (!NativeDetector.isAotRuntime()) {
             Solon.stopBlock(true, -1, execute);

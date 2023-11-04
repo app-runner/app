@@ -54,6 +54,7 @@ public class InstallCli implements AppRunnerSubCli {
             File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
             appDO.setAppPath(downloadFile.getAbsolutePath());
         }
+        appDO.setUsed(true);
         appsPersistence.add(appDO);
         log.info("Application [{}] installed successfully", name);
         return 0;
