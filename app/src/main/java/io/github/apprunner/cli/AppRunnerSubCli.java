@@ -12,9 +12,13 @@ import java.util.concurrent.Callable;
  * @author songyinyin
  * @since 2023/4/21 22:24
  */
-public interface AppRunnerSubCli extends Callable<Integer> {
+public abstract class AppRunnerSubCli implements Callable<Integer> {
 
-    default Integer call() {
+    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Display this help message.")
+    public boolean help;
+
+    @Override
+    public Integer call() {
         try {
             ReentrantStopWatch stopWatch = AppRunnerContext.getStopWatch();
             stopWatch.start(this.getClass().getSimpleName());
@@ -31,9 +35,14 @@ public interface AppRunnerSubCli extends Callable<Integer> {
         }
     }
 
-    Integer execute() throws Exception;
+    /**
+     * 执行子命令
+     *
+     * @return 0 成功，非 0 失败
+     */
+    protected abstract Integer execute() throws Exception;
 
-    default CommandLine getCommandLine() {
+    public CommandLine getCommandLine() {
         CommandLine commandLine = new CommandLine(this);
         // 未匹配的参数作为位置参数
         commandLine.setUnmatchedOptionsArePositionalParams(true);

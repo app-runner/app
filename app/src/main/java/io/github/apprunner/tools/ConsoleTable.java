@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 控制台打印表格工具
@@ -196,4 +197,16 @@ public class ConsoleTable {
 
 		return count;
 	}
+
+    public static String toDetailInfo(Map<String, String> detail) {
+        StringBuilder sb = new StringBuilder();
+        int maxKeyLength = 0;
+        for (String s : detail.keySet()) {
+            maxKeyLength = Math.max(maxKeyLength, s.length());
+        }
+        for (Map.Entry<String, String> entry : detail.entrySet()) {
+            sb.append(StrUtil.padAfter(entry.getKey(), maxKeyLength, CharUtil.SPACE)).append(" : ").append(entry.getValue()).append("\n");
+        }
+        return sb.toString();
+    }
 }

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @since 2023/4/22 18:27
  */
 @Component
-public class AppsPersistence implements LifecycleBean {
+public class AppFilePersistence implements LifecycleBean, AppPersistence {
 
     private final Options jsonOptions = Options.def().add(Feature.PrettyFormat).add(Feature.OrderedField);
 
@@ -45,14 +45,30 @@ public class AppsPersistence implements LifecycleBean {
     /**
      * 添加应用
      */
-    public int add(AppDO plugin) {
-        List<AppDO> plugins = listAll();
-        plugins.add(plugin);
-        writeString(appsJson, ONode.stringify(plugins, jsonOptions));
+    @Override
+    public int add(AppDO app) {
+        List<AppDO> apps = listAll();
+        apps.add(app);
+        writeString(appsJson, ONode.stringify(apps, jsonOptions));
         AppRunnerContext.clearAppsMeta();
         return 1;
     }
 
+    /**
+     * 更新应用
+     */
+    @Override
+    public int update(AppDO app) {
+        List<AppDO> apps = listAll();
+        apps.removeIf(a -> a.getId().equals(app.getId()) && a.getVersion().equals(app.getVersion()));
+        apps.add(app);
+
+        writeString(appsJson, ONode.stringify(apps, jsonOptions));
+        AppRunnerContext.clearAppsMeta();
+        return 1;
+    }
+
+    @Override
     public int remove(String name) {
         List<AppDO> plugins = listAll();
         plugins.removeIf(plugin -> plugin.getName().equals(name));
@@ -64,6 +80,7 @@ public class AppsPersistence implements LifecycleBean {
     /**
      * 获取当前使用的应用版本
      */
+    @Override
     public AppDO getUsed(String name) {
         List<AppDO> plugins = listCurrent();
         return plugins.stream()
@@ -76,12 +93,14 @@ public class AppsPersistence implements LifecycleBean {
      *
      * @param appName
      */
+    @Override
     public void existAndThrow(String appName) {
         if (exist(appName)) {
             throw new AppRunnerException(String.format("Application [%s] already exists", appName));
         }
     }
 
+    @Override
     public boolean exist(String appName) {
         List<AppDO> plugins = listAll();
         Optional<AppDO> first = plugins.stream().filter(e -> StrUtil.equals(e.getName(), appName)).findFirst();
@@ -91,6 +110,7 @@ public class AppsPersistence implements LifecycleBean {
     /**
      * 获取当前安装的应用（包括历史版本）
      */
+    @Override
     public List<AppDO> listAll() {
         List<AppDO> appsMeta = AppRunnerContext.getAppsMeta();
         if (appsMeta != null) {
@@ -107,6 +127,7 @@ public class AppsPersistence implements LifecycleBean {
     /**
      * 获取当前安装的应用，应用有多个版本时，去最新安装的或取使用的版本
      */
+    @Override
     public List<AppDO> listCurrent() {
         List<AppDO> apps = listAll();
         Map<String, List<AppDO>> appMap = new LinkedHashMap<>();

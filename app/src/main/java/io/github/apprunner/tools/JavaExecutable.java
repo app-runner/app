@@ -18,6 +18,7 @@ package io.github.apprunner.tools;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import io.github.apprunner.plugin.AppRunnerException;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,12 +49,18 @@ public class JavaExecutable {
         File bin = new File(new File(javaHome), "bin");
         File command = new File(bin, "java.exe");
         command = command.exists() ? command : new File(bin, "java");
-        Assert.state(command.exists(), () -> "Unable to find java in " + javaHome);
+        if (!command.exists()) {
+            throw new AppRunnerException("Unable to find java in " + javaHome);
+        }
         // 添加执行权限
         if (!command.canExecute()) {
             command.setExecutable(true);
         }
         return command;
+    }
+
+    public boolean canExecute() {
+        return this.file.canExecute();
     }
 
     /**

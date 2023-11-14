@@ -73,16 +73,16 @@ public class JavaProcessExecutor {
     public int run(File workingDirectory) {
         List<String> args = new ArrayList<>();
 
-        if (javaApp.getJava() != null && StrUtil.isNotBlank(javaApp.getJava().getJvmArguments())) {
-            String[] jvmArgs = CommandLineUtils.parseArgs(javaApp.getJava().getJvmArguments());
+        if (javaApp.getJavaParams() != null && StrUtil.isNotBlank(javaApp.getJavaParams().getJvmArguments())) {
+            String[] jvmArgs = CommandLineUtils.parseArgs(javaApp.getJavaParams().getJvmArguments());
             args.addAll(Arrays.asList(jvmArgs));
         }
 
         args.add("-jar");
         args.add(javaApp.getAppPath());
 
-        if (javaApp.getJava() != null && StrUtil.isNotBlank(javaApp.getJava().getAppArguments())) {
-            String[] appArgs = CommandLineUtils.parseArgs(javaApp.getJava().getAppArguments());
+        if (javaApp.getJavaParams() != null && StrUtil.isNotBlank(javaApp.getJavaParams().getProgramArguments())) {
+            String[] appArgs = CommandLineUtils.parseArgs(javaApp.getJavaParams().getProgramArguments());
             args.addAll(Arrays.asList(appArgs));
         }
 

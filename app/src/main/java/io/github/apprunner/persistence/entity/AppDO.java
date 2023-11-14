@@ -36,7 +36,7 @@ public class AppDO implements Serializable {
 
     private String version;
 
-    private JavaDO java;
+    private JavaDO javaParams;
 
     /**
      * 是否为当前使用的版本
@@ -48,17 +48,26 @@ public class AppDO implements Serializable {
      */
     private String appPath;
 
-    /**
-     * 应用运行时依赖的环境，比如 jre 的路径，如果不设置，则使用app配置的对应版本的jre
-     */
-    private String appRuntimePath;
+    public String getAppRuntimePath() {
+        if (appType.equals(ApplicationType.java)) {
+            return javaParams == null ? null : javaParams.getJavaHome();
+        }
+        return null;
+    }
+
+    public JavaDO getJavaParams() {
+        if (appType.equals(ApplicationType.java) && javaParams == null) {
+            javaParams = new JavaDO();
+        }
+        return javaParams;
+    }
 
     @Data
     public static class JavaDO {
 
         private String javaHome;
 
-        private String appArguments;
+        private String programArguments;
 
         private String jvmArguments;
     }

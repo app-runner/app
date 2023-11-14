@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.AppsPersistence;
+import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.tools.DownloadStreamProgress;
@@ -25,10 +26,10 @@ import java.io.File;
 @Slf4j
 @Component
 @CommandLine.Command(name = "upgrade", description = "Upgrade application")
-public class UpgradeCli implements AppRunnerSubCli {
+public class UpgradeCli extends AppRunnerSubCli {
 
 
-    @CommandLine.Parameters(index = "0", description = "application name")
+    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
     private String name;
 
 
@@ -36,11 +37,11 @@ public class UpgradeCli implements AppRunnerSubCli {
     private String version;
 
     @Inject
-    private AppsPersistence appsPersistence;
+    private AppPersistence appPersistence;
 
     @Override
     public Integer execute() {
-        AppDO currApp = appsPersistence.getUsed(name);
+        AppDO currApp = appPersistence.getUsed(name);
 
         AppDO appDO = ApiUtils.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
@@ -56,7 +57,7 @@ public class UpgradeCli implements AppRunnerSubCli {
         File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
         appDO.setAppPath(downloadFile.getAbsolutePath());
         appDO.setUsed(true);
-        appsPersistence.add(appDO);
+        appPersistence.add(appDO);
         log.info("Application [{}] upgraded successfully", name);
         return 0;
     }

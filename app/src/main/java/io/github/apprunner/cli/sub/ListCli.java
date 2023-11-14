@@ -1,9 +1,9 @@
 package io.github.apprunner.cli.sub;
 
-import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
-import io.github.apprunner.persistence.AppsPersistence;
+import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.tools.ConsoleTable;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -19,20 +19,20 @@ import java.util.List;
 @Slf4j
 @Component
 @CommandLine.Command(name = "list", description = "List all supported applications")
-public class ListCli implements AppRunnerSubCli {
+public class ListCli extends AppRunnerSubCli {
 
     @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed", defaultValue = "false")
     private boolean local;
 
     @Inject
-    private AppsPersistence appsPersistence;
+    private AppPersistence appPersistence;
 
     @Override
     public Integer execute() {
 
         ConsoleTable consoleTable = ConsoleTable.create();
         consoleTable.addHeader("name", "version", "appType", "requiredVersion");
-        List<AppDO> localList = appsPersistence.listAll();
+        List<AppDO> localList = appPersistence.listAll();
 
 
         List<String> existAppIds = localList.stream().map(AppDO::getId).toList();

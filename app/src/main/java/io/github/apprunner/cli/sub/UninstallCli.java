@@ -2,7 +2,8 @@ package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
 import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.AppsPersistence;
+import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -17,20 +18,20 @@ import picocli.CommandLine;
 @Slf4j
 @Component
 @CommandLine.Command(name = "uninstall", description = "Uninstalling apps")
-public class UninstallCli implements AppRunnerSubCli {
+public class UninstallCli extends AppRunnerSubCli {
 
-    @CommandLine.Parameters(index = "0", description = "application name")
+    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
     private String name;
 
     @Inject
-    private AppsPersistence appsPersistence;
+    private AppPersistence appPersistence;
 
     @Override
     public Integer execute() {
-        AppDO appDO = appsPersistence.getUsed(name);
+        AppDO appDO = appPersistence.getUsed(name);
 
         String appPath = Util.getAppPath(appDO);
-        appsPersistence.remove(name);
+        appPersistence.remove(name);
         FileUtil.del(appPath);
         log.info("delete file: {}", appPath);
         log.info("Application [{}] uninstalled successfully", name);

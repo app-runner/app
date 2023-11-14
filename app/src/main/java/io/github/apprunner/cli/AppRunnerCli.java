@@ -16,7 +16,7 @@ public class AppRunnerCli implements Runnable {
     CommandLine.Model.CommandSpec spec;
 
     @CommandLine.Option(names = {
-        "--debug" }, description = "app will be verbose on what it does.", scope = CommandLine.ScopeType.INHERIT)
+        "--debug", "--apprunner.debug" }, description = "app will be verbose on what it does.", scope = CommandLine.ScopeType.INHERIT)
     void setDebug(String debug) {
         Util.setDebugMode("1".equals(debug));
     }

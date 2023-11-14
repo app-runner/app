@@ -3,14 +3,14 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.persistence.AppPersistence;
+import io.github.apprunner.persistence.entity.AppDO;
+import io.github.apprunner.persistence.entity.ApplicationType;
+import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.ApiUtils;
 import io.github.apprunner.tools.DownloadStreamProgress;
 import io.github.apprunner.tools.Util;
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.persistence.entity.ApplicationType;
-import io.github.apprunner.persistence.AppsPersistence;
-import io.github.apprunner.persistence.entity.AppDO;
-import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.annotation.Inject;
@@ -25,7 +25,7 @@ import java.io.File;
 @Slf4j
 @Component
 @CommandLine.Command(name = "install", description = "Installing Applications")
-public class InstallCli implements AppRunnerSubCli {
+public class InstallCli extends AppRunnerSubCli {
 
 
     @CommandLine.Parameters(index = "0", description = "application name")
@@ -41,7 +41,7 @@ public class InstallCli implements AppRunnerSubCli {
     private String version;
 
     @Inject
-    private AppsPersistence appsPersistence;
+    private AppPersistence appPersistence;
 
     @Override
     public Integer execute() {
@@ -49,13 +49,14 @@ public class InstallCli implements AppRunnerSubCli {
         if (path != null) {
             appDO = localInstall();
         } else {
-            appsPersistence.existAndThrow(name);
+            appPersistence.existAndThrow(name);
             appDO = ApiUtils.apiLatestVersion(name, null);
-            File downloadFile = HttpUtil.downloadFileFromUrl(appDO.getAppLatestVersion().getGithubDownloadUrl(), FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
+            String downloadUrl = StrUtil.isBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGiteeDownloadUrl() : appDO.getAppLatestVersion().getGithubDownloadUrl();
+            File downloadFile = HttpUtil.downloadFileFromUrl(downloadUrl, FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
             appDO.setAppPath(downloadFile.getAbsolutePath());
         }
         appDO.setUsed(true);
-        appsPersistence.add(appDO);
+        appPersistence.add(appDO);
         log.info("Application [{}] installed successfully", name);
         return 0;
     }
@@ -68,7 +69,7 @@ public class InstallCli implements AppRunnerSubCli {
         appDO.setName(name);
         appDO.setAppType(getAppType(path));
         if (ApplicationType.java.equals(appDO.getAppType())) {
-            appDO.setJava(new AppDO.JavaDO());
+            appDO.setJavaParams(new AppDO.JavaDO());
             appDO.setRequiredAppTypeVersionNum(requiredVersion);
         }
         appDO.setVersion(version);

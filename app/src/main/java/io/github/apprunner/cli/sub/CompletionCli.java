@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 @Slf4j
 @Component
 @CommandLine.Command(name = "completion", description = "Generate completion script")
-public class CompletionCli implements AppRunnerSubCli {
+public class CompletionCli extends AppRunnerSubCli {
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
