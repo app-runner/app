@@ -3,8 +3,7 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.tools.ApiUtils;
@@ -25,15 +24,10 @@ import java.io.File;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "upgrade", description = "Upgrade application")
-public class UpgradeCli extends AppRunnerSubCli {
+@CommandLine.Command(name = "upgrade", description = "${bundle:upgrade.description}")
+public class UpgradeCli extends AppRelatedCli {
 
-
-    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
-    private String name;
-
-
-    @CommandLine.Option(names = {"-v", "--version"}, description = "Specify the version number for the upgrade, if not specified, the latest version is used")
+    @CommandLine.Option(names = {"-v", "--version"}, description = "${bundle:upgrade.parameter.version}")
     private String version;
 
     @Inject
@@ -46,10 +40,10 @@ public class UpgradeCli extends AppRunnerSubCli {
         AppDO appDO = ApiUtils.apiLatestVersion(name, version);
         if (StrUtil.isBlank(version)) {
             if (StrUtil.equals(appDO.getAppLatestVersion().getVersion(), currApp.getVersion())) {
-                log.info("The application [{}] is already the latest version and does not need to be upgraded", name);
+                log.info(getMessages("upgrade.log.noUpgradeRequired", name));
                 return 0;
             }
-            log.info("Latest version of application [{}]: {}, current version: {}", name, appDO.getAppLatestVersion().getVersion(), currApp.getVersion());
+            log.info(getMessages("upgrade.log.version", name, appDO.getAppLatestVersion().getVersion(), currApp.getVersion()));
         }
 
         String url = StrUtil.isNotBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGithubDownloadUrl() : appDO.getAppLatestVersion().getGiteeDownloadUrl();
@@ -58,7 +52,7 @@ public class UpgradeCli extends AppRunnerSubCli {
         appDO.setAppPath(downloadFile.getAbsolutePath());
         appDO.setUsed(true);
         appPersistence.add(appDO);
-        log.info("Application [{}] upgraded successfully", name);
+        log.info(getMessages("upgrade.log.success", name));
         return 0;
     }
 

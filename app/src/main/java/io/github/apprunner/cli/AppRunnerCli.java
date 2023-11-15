@@ -9,14 +9,14 @@ import picocli.CommandLine;
  * @since 2023/4/21 19:03
  */
 @Component
-@CommandLine.Command(name = "app", mixinStandardHelpOptions = true, versionProvider = AppRunnerVersionProvider.class, description = "app-runner is a tool for managing applications")
+@CommandLine.Command(name = "app", mixinStandardHelpOptions = true, versionProvider = AppRunnerVersionProvider.class, description = "${bundle:app.description}")
 public class AppRunnerCli implements Runnable {
 
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 
     @CommandLine.Option(names = {
-        "--debug", "--apprunner.debug" }, description = "app will be verbose on what it does.", scope = CommandLine.ScopeType.INHERIT)
+        "--debug", "--app.debug" }, description = "${bundle:parameter.debug}", scope = CommandLine.ScopeType.INHERIT)
     void setDebug(String debug) {
         Util.setDebugMode("1".equals(debug));
     }

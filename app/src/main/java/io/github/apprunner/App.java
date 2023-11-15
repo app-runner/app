@@ -13,10 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.SolonMain;
 import org.noear.solon.core.runtime.NativeDetector;
+import org.noear.solon.i18n.I18nUtil;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 @Slf4j
 @SolonMain
@@ -39,9 +41,12 @@ public class App {
         stopWatch.start("AppRunnerCli init");
         AppRunnerCli appRunnerCli = Solon.context().getBean(AppRunnerCli.class);
         CommandLine commandLine = new CommandLine(appRunnerCli, new PicocliSolonFactory());
+        commandLine.setResourceBundle(ResourceBundle.getBundle(I18nUtil.getMessageBundleName(), Solon.cfg().locale()));
         List<AppRunnerSubCli> appRunnerSubClis = Solon.context().getBeansOfType(AppRunnerSubCli.class);
         for (AppRunnerSubCli appRunnerSubCli : appRunnerSubClis) {
-            commandLine.addSubcommand(appRunnerSubCli.getCommandLine());
+            CommandLine subCliCommandLine = appRunnerSubCli.getCommandLine();
+            subCliCommandLine.setResourceBundle(ResourceBundle.getBundle(I18nUtil.getMessageBundleName(), Solon.cfg().locale()));
+            commandLine.addSubcommand(subCliCommandLine);
         }
         stopWatch.stop();
         int execute = commandLine.execute(args);

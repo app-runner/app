@@ -1,8 +1,7 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.util.StrUtil;
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
@@ -20,18 +19,15 @@ import picocli.CommandLine;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "run", description = "Running Application")
-public class RunCli extends AppRunnerSubCli {
+@CommandLine.Command(name = "run", description = "${bundle:run.description}")
+public class RunCli extends AppRelatedCli {
 
     @Inject
     private AppPersistence appPersistence;
 
     private final AppHome appHome = new AppHome();
 
-    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
-    private String name;
-
-    @CommandLine.Parameters(index = "1..*", description = "run parameters")
+    @CommandLine.Parameters(index = "1..*", description = "${bundle:run.parameter.appParameters}")
     private String[] appParameters;
 
     @Override

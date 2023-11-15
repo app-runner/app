@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "completion", description = "Generate completion script")
+@CommandLine.Command(name = "completion", description = "${bundle:completion.description}")
 public class CompletionCli extends AppRunnerSubCli {
 
     @CommandLine.Spec
@@ -32,9 +32,10 @@ public class CompletionCli extends AppRunnerSubCli {
         String filePath = Util.getAppHome() + File.separator + spec.parent().name() + "_completion";
 
         FileUtil.writeString(script, filePath, Charset.defaultCharset());
-        log.info("Generate completion script successfully, path: {}", filePath);
-        log.info("You need to execute the following command to enable completion in current shell: `source %s`".formatted(filePath));
-        log.info("If you want to enable completion permanently, you need to add `source %s` to your shell profile(~/.bash_profile or ~/.zshrc)".formatted(filePath));
+
+        log.info(getMessages("completion.log.success1", filePath));
+        log.info(getMessages("completion.log.success2", filePath));
+        log.info(getMessages("completion.log.success3", filePath));
         return 0;
     }
 }

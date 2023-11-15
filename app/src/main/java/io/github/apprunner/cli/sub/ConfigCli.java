@@ -1,8 +1,7 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.util.StrUtil;
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.plugin.AppRunnerException;
@@ -22,27 +21,24 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "config", description = "config app runtime path and self configuration")
-public class ConfigCli extends AppRunnerSubCli {
+@CommandLine.Command(name = "config", description = "${bundle:config.description}")
+public class ConfigCli extends AppRelatedCli {
 
     @Inject
     private AppPersistence appPersistence;
     @Inject
     private InfoCli infoCli;
 
-    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
-    private String name;
-
-    @CommandLine.Option(names = {"-r", "--runtime"}, description = "app runtime path. java app is java home path, shell app is shell path")
+    @CommandLine.Option(names = {"-r", "--runtime"}, description = "${bundle:config.parameter.runtime}")
     private String runtimePath;
 
-    @CommandLine.Option(names = {"-p", "--programArguments"}, description = "java app program arguments")
+    @CommandLine.Option(names = {"-p", "--programArguments"}, description = "${bundle:config.parameter.programArguments}")
     private String programArguments;
 
-    @CommandLine.Option(names = {"-j", "--jvmArguments"}, description = "java app jvm arguments")
+    @CommandLine.Option(names = {"-j", "--jvmArguments"}, description = "${bundle:config.parameter.jvmArguments}")
     private String jvmArguments;
 
-    @CommandLine.Parameters(index = "1..*", description = "app configuration")
+    @CommandLine.Parameters(index = "1..*", description = "${bundle:config.parameter.appConfigurations}")
     private String[] appConfigurations;
 
     @Override
@@ -61,7 +57,7 @@ public class ConfigCli extends AppRunnerSubCli {
         }
 
         appPersistence.update(used);
-        log.info("Application [{}] config successfully", name);
+        log.info(getMessages("config.log.success", name));
 
         infoCli.printAppInfo(name);
 

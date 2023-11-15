@@ -1,6 +1,7 @@
 package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.cli.AppRunnerSubCli;
 import io.github.apprunner.cli.support.AppNameCandidates;
 import io.github.apprunner.persistence.AppPersistence;
@@ -17,11 +18,8 @@ import picocli.CommandLine;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "uninstall", description = "Uninstalling apps")
-public class UninstallCli extends AppRunnerSubCli {
-
-    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
-    private String name;
+@CommandLine.Command(name = "uninstall", description = "${bundle:uninstall.description}")
+public class UninstallCli extends AppRelatedCli {
 
     @Inject
     private AppPersistence appPersistence;
@@ -33,8 +31,8 @@ public class UninstallCli extends AppRunnerSubCli {
         String appPath = Util.getAppPath(appDO);
         appPersistence.remove(name);
         FileUtil.del(appPath);
-        log.info("delete file: {}", appPath);
-        log.info("Application [{}] uninstalled successfully", name);
+        log.info(getMessages("uninstall.log.delete", appPath));
+        log.info(getMessages("uninstall.log.success", name));
         return null;
     }
 }

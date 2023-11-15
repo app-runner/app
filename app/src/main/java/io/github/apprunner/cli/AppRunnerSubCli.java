@@ -3,7 +3,9 @@ package io.github.apprunner.cli;
 import io.github.apprunner.plugin.AppRunnerException;
 import io.github.apprunner.tools.AppRunnerContext;
 import io.github.apprunner.tools.ReentrantStopWatch;
+import org.noear.solon.Solon;
 import org.noear.solon.core.util.LogUtil;
+import org.noear.solon.i18n.I18nUtil;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
@@ -14,7 +16,7 @@ import java.util.concurrent.Callable;
  */
 public abstract class AppRunnerSubCli implements Callable<Integer> {
 
-    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Display this help message.")
+    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "${bundle:parameter.help}")
     public boolean help;
 
     @Override
@@ -49,6 +51,10 @@ public abstract class AppRunnerSubCli implements Callable<Integer> {
         commandLine.setUnmatchedArgumentsAllowed(true);
         commandLine.setUnmatchedOptionsAllowedAsOptionParameters(true);
         return commandLine;
+    }
+
+    protected String getMessages(String code, Object... args) {
+        return I18nUtil.getMessage(Solon.cfg().locale(), code, args);
     }
 
 }

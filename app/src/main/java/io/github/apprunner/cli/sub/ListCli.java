@@ -18,10 +18,10 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "list", description = "List all supported applications")
+@CommandLine.Command(name = "list", description = "${bundle:list.description}")
 public class ListCli extends AppRunnerSubCli {
 
-    @CommandLine.Option(names = {"-l", "--local"}, description = "Is only local applications listed", defaultValue = "false")
+    @CommandLine.Option(names = {"-l", "--local"}, description = "${bundle:list.parameter.local}", defaultValue = "false")
     private boolean local;
 
     @Inject

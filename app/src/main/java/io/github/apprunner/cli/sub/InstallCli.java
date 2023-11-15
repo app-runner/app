@@ -3,7 +3,7 @@ package io.github.apprunner.cli.sub;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import io.github.apprunner.cli.AppRunnerSubCli;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.entity.ApplicationType;
@@ -24,20 +24,16 @@ import java.io.File;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "install", description = "Installing Applications")
-public class InstallCli extends AppRunnerSubCli {
+@CommandLine.Command(name = "install", description = "${bundle:install.description}")
+public class InstallCli extends AppRelatedCli {
 
-
-    @CommandLine.Parameters(index = "0", description = "application name")
-    private String name;
-
-    @CommandLine.Option(names = {"-p", "--path"}, description = "Local application file path")
+    @CommandLine.Option(names = {"-p", "--path"}, description = "${bundle:install.parameter.path}")
     private File path;
 
-    @CommandLine.Option(names = {"-rv", "--requiredVersion"}, description = "The minimum version of the application to run, for example, Java applications need to specify the Java version, 17")
+    @CommandLine.Option(names = {"-rv", "--requiredVersion"}, description = "${bundle:install.parameter.requiredVersion}")
     private Long requiredVersion;
 
-    @CommandLine.Option(names = {"-v", "--version"}, defaultValue = "local_version", description = "version")
+    @CommandLine.Option(names = {"-v", "--version"}, description = "${bundle:install.parameter.version}")
     private String version;
 
     @Inject
@@ -57,13 +53,13 @@ public class InstallCli extends AppRunnerSubCli {
         }
         appDO.setUsed(true);
         appPersistence.add(appDO);
-        log.info("Application [{}] installed successfully", name);
+        log.info(getMessages("install.log.success", name));
         return 0;
     }
 
     private AppDO localInstall() {
         if (requiredVersion == null) {
-            throw new AppRunnerException("Please specify the minimum version that the application runs, for example, Java applications need to specify the Java version, 17");
+            throw new AppRunnerException("requiredVersion is required");
         }
         AppDO appDO = new AppDO();
         appDO.setName(name);
@@ -72,10 +68,10 @@ public class InstallCli extends AppRunnerSubCli {
             appDO.setJavaParams(new AppDO.JavaDO());
             appDO.setRequiredAppTypeVersionNum(requiredVersion);
         }
-        appDO.setVersion(version);
+        appDO.setVersion("local");
         String installedAppPath = Util.getAppPath(appDO) + "/" + path.getName();
         File copy = FileUtil.copy(path, new File(installedAppPath), true);
-        log.info("copy application [{}] to: {}", name, copy.getAbsolutePath());
+        log.info(getMessages("install.log.copy", name, copy.getAbsolutePath()));
         appDO.setAppPath(copy.getAbsolutePath());
         return appDO;
     }

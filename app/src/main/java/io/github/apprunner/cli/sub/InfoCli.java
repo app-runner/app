@@ -1,7 +1,6 @@
 package io.github.apprunner.cli.sub;
 
-import io.github.apprunner.cli.AppRunnerSubCli;
-import io.github.apprunner.cli.support.AppNameCandidates;
+import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.entity.ApplicationType;
@@ -21,14 +20,11 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@CommandLine.Command(name = "info", description = "View current used application information")
-public class InfoCli extends AppRunnerSubCli {
+@CommandLine.Command(name = "info", description = "${bundle:info.description}")
+public class InfoCli extends AppRelatedCli {
 
     @Inject
     private AppPersistence appPersistence;
-
-    @CommandLine.Parameters(index = "0", description = "application name", completionCandidates = AppNameCandidates.class)
-    private String name;
 
     @Override
     public Integer execute() throws IOException {
