@@ -63,7 +63,7 @@ public class AppDO implements Serializable {
     }
 
     @Data
-    public static class JavaDO {
+    public static class JavaDO implements Serializable {
 
         private String javaHome;
 

@@ -19,6 +19,7 @@ public class AppRunnerNativeRegistrar implements RuntimeNativeRegistrar {
     @Override
     public void register(AppContext context, RuntimeNativeMetadata nativeMetadata) {
         nativeMetadata.registerSerialization(AppDO.class);
+        nativeMetadata.registerSerialization(AppDO.JavaDO.class);
         nativeMetadata.registerSerialization(StmAppVersionDO.class);
 
         nativeMetadata.registerArg("--enable-http");
