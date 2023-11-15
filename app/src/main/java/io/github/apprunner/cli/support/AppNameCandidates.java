@@ -1,6 +1,6 @@
 package io.github.apprunner.cli.support;
 
-import io.github.apprunner.persistence.AppFilePersistence;
+import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import org.noear.solon.Solon;
 import org.noear.solon.annotation.Component;
@@ -15,7 +15,7 @@ import java.util.Iterator;
 public class AppNameCandidates implements Iterable<String> {
     @Override
     public Iterator<String> iterator() {
-        AppFilePersistence appsPersistence = Solon.context().getBean(AppFilePersistence.class);
+        AppPersistence appsPersistence = Solon.context().getBean(AppPersistence.class);
         return appsPersistence.listCurrent().stream().map(AppDO::getName).toList().iterator();
     }
 }

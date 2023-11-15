@@ -30,7 +30,7 @@ public abstract class AppRunnerSubCli implements Callable<Integer> {
                 LogUtil.global().error(ae.getMessage(), ae.getException());
                 return ae.getExitCode();
             }
-            LogUtil.global().error(e.getMessage(), e);
+            LogUtil.global().error("error: ", e);
             return -1;
         }
     }
