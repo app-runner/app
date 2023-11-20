@@ -45,7 +45,7 @@ jobs:
         run: |
           mvn clean install -DskipTests -pl common -am --no-transfer-progress
           cd app-runner
-          mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
+          mvn clean native:compile -P native --no-transfer-progress
           cp app-runner/target/app ./../app
       # 压缩文件
       - name: Archive zip
