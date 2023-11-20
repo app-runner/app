@@ -2,6 +2,8 @@ package io.github.apprunner.tools;
 
 import cn.hutool.core.io.StreamProgress;
 import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @author songyinyin
@@ -23,12 +25,12 @@ public class DownloadStreamProgress implements StreamProgress {
         if (total > 0) {
             if (!isPrint) {
                 String format = DataSizeUtil.format(total);
-                System.out.printf(", total size: %s. ->", format);
+                System.out.printf(", total size: %s. \n->", format);
                 isPrint = true;
             }
             double progressPercentage = Math.floor(((float) progressSize / total) * 100);
             if (progressPercentage > percent) {
-                System.out.print("->");
+                System.out.printf("->%s ", NumberUtil.formatPercent((double) progressSize / total, 0));
                 percent += 10;
             }
         }

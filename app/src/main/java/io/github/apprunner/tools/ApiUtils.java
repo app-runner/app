@@ -9,6 +9,7 @@ import io.github.apprunner.plugin.AppRunnerException;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.snack.ONode;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,13 +58,41 @@ public class ApiUtils {
         return oNode.toObjectList(String.class);
     }
 
+    /**
+     * 下载文件
+     *
+     * @param downloadUrl 文件下载地址
+     * @param destFile    目标文件
+     * @return 下载的文件
+     */
+    public static File downloadFile(String downloadUrl, File destFile) {
+        return HttpUtil.downloadFileFromUrl(downloadUrl, destFile, new DownloadStreamProgress());
+    }
+
+    /**
+     * 请求 app admin 接口
+     *
+     * @param path     接口路径
+     * @param paramMap 参数
+     * @return 返回结果
+     */
     private static ONode apiRequest(String path, Map<String, Object> paramMap) {
         String apiUrl = Util.apiUrl();
         String url = apiUrl + path;
+
+        ONode oNode = getRequest(url, paramMap);
+        int status = oNode.get("status").getInt();
+        if (status != 0) {
+            throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
+        }
+        return oNode.get("data");
+    }
+
+    public static ONode getRequest(String url, Map<String, Object> paramMap) {
         if (Util.isDebugMode()) {
             log.info("{} request: {}", url, paramMap);
         }
-        HttpResponse httpResponse = HttpRequest.get(url).form(paramMap).timeout(Util.timeout()).execute();
+        HttpResponse httpResponse = HttpRequest.get(url).contentType("application/json;charset=UTF-8").form(paramMap).timeout(Util.timeout()).execute();
         String responseBody = httpResponse.body();
         if (httpResponse.getStatus() != 200) {
             throw new AppRunnerException("request was failed(%s)：%s".formatted(httpResponse.getStatus(), responseBody));
@@ -71,11 +100,6 @@ public class ApiUtils {
         if (Util.isDebugMode()) {
             log.info("{} response: {}", url, responseBody);
         }
-        ONode oNode = ONode.loadStr(responseBody);
-        int status = oNode.get("status").getInt();
-        if (status != 0) {
-            throw new AppRunnerException("request was aborted(%s)：%s".formatted(status, oNode.get("msg").getString()));
-        }
-        return oNode.get("data");
+        return ONode.loadStr(responseBody);
     }
 }

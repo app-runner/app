@@ -2,12 +2,10 @@ package io.github.apprunner.cli.sub;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
 import io.github.apprunner.cli.AppRelatedCli;
 import io.github.apprunner.persistence.AppPersistence;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.tools.ApiUtils;
-import io.github.apprunner.tools.DownloadStreamProgress;
 import io.github.apprunner.tools.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
@@ -48,7 +46,7 @@ public class UpgradeCli extends AppRelatedCli {
 
         String url = StrUtil.isNotBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGithubDownloadUrl() : appDO.getAppLatestVersion().getGiteeDownloadUrl();
 
-        File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
+        File downloadFile = ApiUtils.downloadFile(url, FileUtil.mkdir(Util.getAppPath(appDO)));
         appDO.setAppPath(downloadFile.getAbsolutePath());
         appDO.setUsed(true);
         appPersistence.add(appDO);

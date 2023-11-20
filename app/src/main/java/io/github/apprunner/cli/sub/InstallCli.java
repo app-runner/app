@@ -48,7 +48,7 @@ public class InstallCli extends AppRelatedCli {
             appPersistence.existAndThrow(name);
             appDO = ApiUtils.apiLatestVersion(name, null);
             String downloadUrl = StrUtil.isBlank(appDO.getAppLatestVersion().getGithubDownloadUrl()) ? appDO.getAppLatestVersion().getGiteeDownloadUrl() : appDO.getAppLatestVersion().getGithubDownloadUrl();
-            File downloadFile = HttpUtil.downloadFileFromUrl(downloadUrl, FileUtil.mkdir(Util.getAppPath(appDO)), new DownloadStreamProgress());
+            File downloadFile = ApiUtils.downloadFile(downloadUrl, FileUtil.mkdir(Util.getAppPath(appDO)));
             appDO.setAppPath(downloadFile.getAbsolutePath());
         }
         appDO.setUsed(true);

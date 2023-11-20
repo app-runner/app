@@ -5,7 +5,6 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.SystemPropsUtil;
 import cn.hutool.core.util.ZipUtil;
-import cn.hutool.http.HttpUtil;
 import io.github.apprunner.persistence.entity.AppDO;
 import io.github.apprunner.persistence.entity.ApplicationType;
 import io.github.apprunner.plugin.AppRunnerException;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.Solon;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -99,9 +99,23 @@ public class Util {
         return "%s/%s/%s".formatted(appPackage, appDO.getName(), appDO.getVersion());
     }
 
+    /**
+     * 应用运行时环境路径，形如：~/.apprunner/runtime/{appType}/{requiredVersion}
+     *
+     * @param appType         应用类型
+     * @param requiredVersion 版本
+     * @return 路径
+     */
     public static String getAppRuntimePath(String appType, Long requiredVersion) {
         String appRuntimeHome = getAppRuntimeHome();
         return "%s/%s/%s".formatted(appRuntimeHome, appType.toLowerCase(), requiredVersion);
+    }
+
+    /**
+     * app runner 路径
+     */
+    public static String getAppRunnerPath() {
+        return getAppHome() + "/bin";
     }
 
     public static void setDebugMode(boolean debugMode) {
@@ -126,6 +140,25 @@ public class Util {
         return javaHome;
     }
 
+    /**
+     * 解压文件
+     *
+     * @param zipFile    压缩的文件
+     * @param outFileDir 解压到的目录
+     */
+    public static void unzip(File zipFile, String outFileDir) {
+        String downloadFileName = zipFile.getName();
+        if (downloadFileName.endsWith(".zip")) {
+            ZipUtil.unzip(zipFile, FileUtil.mkdir(outFileDir), StandardCharsets.UTF_8);
+            log.info("unzip {} to {}", zipFile, outFileDir);
+        } else if (downloadFileName.endsWith(".tar.gz")) {
+            GzipUtil.extractTarGZ(zipFile, outFileDir);
+            log.info("gzip {} to {}", zipFile, outFileDir);
+        } else {
+            throw new AppRunnerException("Unsupported file type: %s".formatted(downloadFileName));
+        }
+    }
+
     private static String useDownloadJavaHome(Long requiredJreVersion) {
         String appRuntimePath = getAppRuntimePath(ApplicationType.java.getType(), requiredJreVersion);
         File file = new File(appRuntimePath);
@@ -136,17 +169,8 @@ public class Util {
             List<String> urls = ApiUtils.apiGetAppRuntimeSdkUrls(ApplicationType.java.getType(), requiredJreVersion);
             String url = urls.get(0).split(",")[0];
 
-            File downloadFile = HttpUtil.downloadFileFromUrl(url, FileUtil.mkdir(getAppTmp()), new DownloadStreamProgress());
-            String downloadFileName = downloadFile.getName();
-            if (downloadFileName.endsWith(".zip")) {
-                log.info("unzip {} to {}", downloadFile, file);
-                ZipUtil.unzip(downloadFile, file);
-            } else if (downloadFileName.endsWith("tar.gz")) {
-                log.info("gzip {} to {}", downloadFile, file);
-                GzipUtil.extractTarGZ(downloadFile, appRuntimePath);
-            } else {
-                throw new AppRunnerException("Unsupported file type: %s".formatted(downloadFileName));
-            }
+            File downloadFile = ApiUtils.downloadFile(url, FileUtil.mkdir(getAppTmp()));
+            unzip(downloadFile, appRuntimePath);
         }
         String[] list = file.list();
         if (list != null) {

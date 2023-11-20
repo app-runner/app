@@ -18,7 +18,7 @@ public class AppRunnerVersionProvider implements CommandLine.IVersionProvider {
     @Override
     public String[] getVersion() throws Exception {
         String solonVersion = String.format(":: Solon  :: v(%s)", Solon.version());
-        String stmVersion = String.format(":: AppRunner :: v(%s)", Solon.cfg().get("apprunner.version", "unknown"));
+        String stmVersion = String.format(":: AppRunner :: v(%s)", getAppRunnerVersion());
         if (Util.isDebugMode()) {
             String osName = Util.getOsName();
             String osArch = Util.getOsArch();
@@ -28,5 +28,9 @@ public class AppRunnerVersionProvider implements CommandLine.IVersionProvider {
             return new String[]{solonVersion, stmVersion, sysInfo, charsetInfo, currentDir};
         }
         return new String[]{solonVersion, stmVersion};
+    }
+
+    public static String getAppRunnerVersion() {
+        return Solon.cfg().get("apprunner.version", "unknown");
     }
 }
