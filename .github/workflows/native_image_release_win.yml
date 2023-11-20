@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         # 'ubuntu-latest', 'windows-latest', 'macos-latest'
-        os: ['windows-2019']
+        os: ['windows-2022']
     name: build - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
