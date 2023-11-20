@@ -1,4 +1,4 @@
-name: Build linux and mac native image
+name: Build win native image
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         # 'ubuntu-latest', 'windows-latest', 'macos-latest'
-        os: ['windows-2022']
+        os: ['windows-2019']
     name: build - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
@@ -35,6 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Set vars
+        shell: bash
         run: |
           OS=$(echo '${{ runner.os }}' | awk '{print tolower($0)}')
           [[ $OS == 'ubuntu' ]] && echo "OS=linux" >> $GITHUB_ENV || echo "OS=$OS" >> $GITHUB_ENV
