@@ -1,4 +1,4 @@
-name: native image release
+name: Build linux and mac native image
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         # 'ubuntu-latest', 'windows-latest', 'macos-latest'
-        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+        os: ['windows-2022']
     name: build - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
@@ -34,29 +34,39 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Set vars
+        run: |
+          OS=$(echo '${{ runner.os }}' | awk '{print tolower($0)}')
+          [[ $OS == 'ubuntu' ]] && echo "OS=linux" >> $GITHUB_ENV || echo "OS=$OS" >> $GITHUB_ENV
+          [[ $OS == 'macos' ]] && echo "OS=darwin" >> $GITHUB_ENV || echo "OS=$OS" >> $GITHUB_ENV
+          echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Build with Maven
         run: |
-          sh .github/build-gh.sh
+          set MAVEN_OPTS="-Duser.language=UTF-8 -Dfile.encoding=UTF-8"
+          mvn clean install -DskipTests -pl common -am --no-transfer-progress
+          cd app || exit
+          mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
+          cp app-runner/target/app.exe ./../app.exe
       # 压缩文件
       - name: Archive zip
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: 'app/target'
-          path: 'app*'
-          filename: app-${{ matrix.os }}
-          exclusions: 'app*.txt app*.jar app*.jar.original'
+          path: 'app.exe'
+          filename: app-${{ env.OS }}
       # 上传构建产物
       - name: Upload artifact
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: app-${{ matrix.os }}.zip
-          path: app/target/app-${{ matrix.os }}.zip
+          name: app-${{ env.OS }}.zip
+          path: app-${{ env.OS }}.zip
       # GitHub 上创建 release
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: app-${{ matrix.os }}.zip
+          files: |
+            app-${{ env.OS }}.zip
+            app-runner/target/app.jar
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
