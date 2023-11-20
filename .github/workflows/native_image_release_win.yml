@@ -45,7 +45,7 @@ jobs:
         run: |
           set MAVEN_OPTS="-Duser.language=UTF-8 -Dfile.encoding=UTF-8"
           mvn clean install -DskipTests -pl common -am --no-transfer-progress
-          cd app-runner || exit
+          cd app-runner
           mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
           cp app-runner/target/app.exe ./../app.exe
       # 压缩文件
