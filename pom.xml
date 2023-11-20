@@ -13,13 +13,13 @@
 
     <groupId>io.github.apprunner</groupId>
     <artifactId>app-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1</version>
     
     <packaging>pom</packaging>
 
     <description>App runner</description>
     <modules>
-        <module>app</module>
+        <module>app-runner</module>
         <module>common</module>
     </modules>
 

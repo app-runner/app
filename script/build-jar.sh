@@ -5,7 +5,7 @@ startTime_s=`date +%s`
 
 mvn clean install -DskipTests -P tencent -pl common -am --no-transfer-progress
 
-cd app || exit
+cd app-runner || exit
 
 mvn clean package -P tencent -DskipTests --no-transfer-progress
 
