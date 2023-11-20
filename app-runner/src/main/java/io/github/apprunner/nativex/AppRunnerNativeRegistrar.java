@@ -27,7 +27,9 @@ public class AppRunnerNativeRegistrar implements RuntimeNativeRegistrar {
         nativeMetadata.registerArg("--enable-http");
         nativeMetadata.registerArg("--enable-https");
 
-        nativeMetadata.registerArg("-H:+AddAllCharsets", "-Dfile.encoding=UTF-8");
+        nativeMetadata.registerArg("-H:+AddAllCharsets");
+        nativeMetadata.registerArg("-march=compatibility");
+        nativeMetadata.registerArg("-H:Name=app");
 
     }
 }
