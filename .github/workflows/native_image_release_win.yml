@@ -46,7 +46,7 @@ jobs:
           mvn clean install -DskipTests -pl common -am --no-transfer-progress
           cd app-runner
           mvn clean native:compile -P native --no-transfer-progress
-          cp app-runner/target/app.exe ./../app.exe
+          cp target/app.exe ./../app.exe
       # 压缩文件
       - name: Archive zip
         uses: thedoctor0/zip-release@master
