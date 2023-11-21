@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         # 'ubuntu-latest', 'windows-latest', 'macos-latest'
-        os: ['windows-2019']
+        os: ['windows-2022']
     name: build - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
@@ -23,9 +23,8 @@ jobs:
       - name: GitHub Action for GraalVM JDK 17
         uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.2'
-          java-version: '17'
-          components: 'native-image'
+          java-version: '17.0.7' # for a specific JDK 17; or '17' for the latest JDK 17
+          distribution: 'graalvm' # New 'distribution' option
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Cache local Maven repository
         uses: actions/cache@v2
@@ -43,11 +42,11 @@ jobs:
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Build with Maven
         run: |
-          set MAVEN_OPTS="-Duser.language=UTF-8 -Dfile.encoding=UTF-8"
+          set MAVEN_OPTS="-Duser.language=zh -Duser.region=CN -Dfile.encoding=UTF-8"
           mvn clean install -DskipTests -pl common -am --no-transfer-progress
-          cd app-runner || exit
-          mvn clean native:compile -P native --no-transfer-progress -Dfile.encoding=UTF-8
-          cp app-runner/target/app.exe ./../app.exe
+          cd app-runner
+          mvn clean native:compile -P native --no-transfer-progress
+          cp target/app.exe ./../app.exe
       # 压缩文件
       - name: Archive zip
         uses: thedoctor0/zip-release@master
