@@ -22,14 +22,13 @@ public class AppRunnerNativeRegistrar implements RuntimeNativeRegistrar {
         nativeMetadata.registerSerialization(AppDO.JavaDO.class);
         nativeMetadata.registerSerialization(StmAppVersionDO.class);
 
-        nativeMetadata.registerResourceInclude("i18n/messages_.*\\.properties");
+        nativeMetadata.registerResourceInclude("i18n/messages.*\\.properties");
 
         nativeMetadata.registerArg("--enable-http");
         nativeMetadata.registerArg("--enable-https");
 
         nativeMetadata.registerArg("-H:+AddAllCharsets");
         nativeMetadata.registerArg("-march=compatibility");
-        nativeMetadata.registerArg("-H:Name=app");
 
     }
 }

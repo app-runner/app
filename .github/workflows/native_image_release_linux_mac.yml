@@ -42,6 +42,7 @@ jobs:
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Build with Maven
         run: |
+          export MAVEN_OPTS="-Duser.language=zh -Duser.region=CN -Dfile.encoding=UTF-8"
           mvn clean install -DskipTests -pl common -am --no-transfer-progress
           cd app-runner
           mvn clean native:compile -P native --no-transfer-progress
